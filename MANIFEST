@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/SDLx-Widgets.t
+lib/SDLx/Widgets.pm
