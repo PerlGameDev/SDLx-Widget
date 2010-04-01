@@ -74,7 +74,6 @@ package SDLx::Widget::Sprite;
 use SDL;
 use SDL::Surface;
 use SDL::Rect;
-use SDL::Video;
 
 our @ISA = qw(SDLx::Widget::Drawable);
 
@@ -89,7 +88,7 @@ sub new {
     return $self;
 }
 
-sub w {
+sub width {
     my $self = shift;
     if (@_ == 1 ) {
         $self->{rect}->w = shift;
@@ -100,7 +99,7 @@ sub w {
     return $self->{rect}->w;
 }
 
-sub h {
+sub height {
     my $self = shift;
     if ( @_ == 1 ) {
         $self->{rect}->h = shift;
