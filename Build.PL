@@ -6,6 +6,6 @@ Module::Build->new
       license         => 'perl',
       build_reguires  => {
 	      SDL => '2.4'
-      }
+      },
       author	      => 'Dustin Mays <dork.fish.wat@gmail.com>'
     )->create_build_script;
