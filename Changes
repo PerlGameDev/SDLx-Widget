@@ -1,6 +1,6 @@
-Revision history for Perl extension SDLx::Widgets.
+Revision history for Perl module SDLx::Widget
 
-0.01  Tue Mar 30 05:57:17 2010
-	- original version; created by h2xs 1.23 with options
-		-XA -O -n SDLx::Widgets
+0.01 Thu Apr  8 14:06:19 2010
+    - original version; created by ExtUtils::ModuleMaker 0.51
+
 

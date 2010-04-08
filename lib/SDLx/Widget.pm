@@ -1,84 +1,111 @@
 package SDLx::Widget;
-
-use 5.010001;
 use strict;
-use warnings;
 
-require Exporter;
-
-our @ISA = qw(Exporter);
-
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use SDLx::Widget ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	
-) ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw(
-	
-);
-
-our $VERSION = '0.01';
+BEGIN {
+    use Exporter ();
+    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
+    $VERSION     = '0.01';
+    @ISA         = qw(Exporter);
+    #Give a hoot don't pollute, do not export more than needed by default
+    @EXPORT      = qw();
+    @EXPORT_OK   = qw();
+    %EXPORT_TAGS = ();
+}
 
 
-# Preloaded methods go here.
+#################### subroutine header begin ####################
 
-1;
-__END__
-# Below is stub documentation for your module. You'd better edit it!
+=head2 sample_function
+
+ Usage     : How to use this function/method
+ Purpose   : What it does
+ Returns   : What it returns
+ Argument  : What it wants to know
+ Throws    : Exceptions and other anomolies
+ Comment   : This is a sample subroutine header.
+           : It is polite to include more pod and fewer comments.
+
+See Also   : 
+
+=cut
+
+#################### subroutine header end ####################
+
+
+sub new
+{
+    my ($class, %parameters) = @_;
+
+    my $self = bless ({}, ref ($class) || $class);
+
+    return $self;
+}
+
+
+#################### main pod documentation begin ###################
+## Below is the stub of documentation for your module. 
+## You better edit it!
+
 
 =head1 NAME
 
-SDLx::Widget - Perl extension for blah blah blah
+SDLx::Widget - Common Widgets using SDL
 
 =head1 SYNOPSIS
 
   use SDLx::Widget;
-  blah blah blah
+  use SDLx::Widget::Controller;
 
 =head1 DESCRIPTION
 
-Stub documentation for SDLx::Widget, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
 
-Blah blah blah.
+=head1 USAGE
 
-=head2 EXPORT
+Pick a widget connect it to SDLx::Widget::Controller. More to come
 
-None by default.
 
+=head1 BUGS
+
+
+
+=head1 SUPPORT
+
+ #sdl irc.perl.org
+
+=head1 AUTHORS
+
+    Dustin Mays
+
+    Garu
+    CPAN ID: GARU
+
+    Zach
+    CPAN ID:ZPMORGAN
+    
+ 
+    Kartik Thakore
+    CPAN ID: KTHAKORE
+
+    http://sdl.perl.org
+
+=head1 COPYRIGHT
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
 
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
-
-=head1 AUTHOR
-
-A. U. Thor, E<lt>dorkfish@elys.comE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2010 by A. U. Thor
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.10.1 or,
-at your option, any later version of Perl 5 you may have available.
-
+perl(1).
 
 =cut
+
+#################### main pod documentation end ###################
+
+
+1;
+# The preceding line will help the module return a true value
+
