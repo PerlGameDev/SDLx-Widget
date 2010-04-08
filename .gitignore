@@ -2,4 +2,6 @@ Build
 blib/
 _build/
 *META.yml
+MANIFEST
+MANIFEST.bak
 

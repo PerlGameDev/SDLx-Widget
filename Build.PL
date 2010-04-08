@@ -5,7 +5,8 @@ Module::Build->new
     ( module_name     => 'SDLx::Widget',
       license         => 'perl',
       build_reguires  => {
+
 	      SDL => '2.4'
       },
-      author	      => 'Dustin Mays <dork.fish.wat@gmail.com>'
+      author	      => 'Dustin Mays, Garu, Zpmorgan, kthakore'
     )->create_build_script;
