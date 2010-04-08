@@ -4,13 +4,13 @@ use warnings;
 use SDL;
 use SDL::Event;
 use SDL::Events;
-use SDLx::Controller::Timer;
+use SDLx::Widget::Controller::Timer;
 use Data::Dumper;
 
 sub new {
     my $class = shift;
     my $self = bless {@_}, $class;
-    $self->{delta} = SDLx::Controller::Timer->new();
+    $self->{delta} = SDLx::Widget::Controller::Timer->new();
     $self->{delta}->start();    # should do this after on_load
     $self->{dt} = 0.1 unless $self->{dt};
 

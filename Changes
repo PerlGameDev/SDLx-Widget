@@ -1,5 +1,8 @@
 Revision history for Perl module SDLx::Widget
 
+0.02
+    - Fixed a critical bug
+
 0.01 Thu Apr  8 14:06:19 2010
     - Added examples
     - Add controller

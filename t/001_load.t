@@ -2,11 +2,14 @@
 
 # t/001_load.t - check module loading and create testing directory
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
-BEGIN { use_ok( 'SDLx::Widget' ); }
+BEGIN { 
+	use_ok( 'SDLx::Widget' );
+	use_ok( 'SDLx::Widget::Controller' );
+	use_ok( 'SDLx::Widget::Controller::Timer' );
+}
 
-my $object = SDLx::Widget->new ();
-isa_ok ($object, 'SDLx::Widget');
+
 
 
