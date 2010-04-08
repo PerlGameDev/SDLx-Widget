@@ -6,3 +6,4 @@ Changes
 Build.PL
 lib/SDLx/Widget.pm
 t/001_load.t
+META.yml
