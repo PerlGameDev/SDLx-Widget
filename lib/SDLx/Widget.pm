@@ -13,40 +13,6 @@ BEGIN {
 }
 
 
-#################### subroutine header begin ####################
-
-=head2 sample_function
-
- Usage     : How to use this function/method
- Purpose   : What it does
- Returns   : What it returns
- Argument  : What it wants to know
- Throws    : Exceptions and other anomolies
- Comment   : This is a sample subroutine header.
-           : It is polite to include more pod and fewer comments.
-
-See Also   : 
-
-=cut
-
-#################### subroutine header end ####################
-
-
-sub new
-{
-    my ($class, %parameters) = @_;
-
-    my $self = bless ({}, ref ($class) || $class);
-
-    return $self;
-}
-
-
-#################### main pod documentation begin ###################
-## Below is the stub of documentation for your module. 
-## You better edit it!
-
-
 =head1 NAME
 
 SDLx::Widget - Common Widgets using SDL
@@ -63,6 +29,7 @@ SDLx::Widget - Common Widgets using SDL
 
 Pick a widget connect it to SDLx::Widget::Controller. More to come
 
+See the examples directory that came with this package
 
 =head1 BUGS
 

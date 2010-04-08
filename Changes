@@ -1,6 +1,7 @@
 Revision history for Perl module SDLx::Widget
 
 0.01 Thu Apr  8 14:06:19 2010
+    - Added examples
     - Add controller
     - Add menu widget
 
