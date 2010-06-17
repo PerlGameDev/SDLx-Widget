@@ -4,9 +4,17 @@ use Module::Build;
 Module::Build->new
     ( module_name     => 'SDLx::Widget',
       license         => 'perl',
-      build_reguires  => {
+      build_requires  => {
 
-	      SDL => '2.4'
+	      'SDL' => '2.4'
       },
-      author	      => 'Dustin Mays, Garu, Zpmorgan, kthakore'
+      dist_abstract 	      => 'Common game widgets using SDL',
+      dist_author	      => 'Dustin Mays, Garu, Zpmorgan, kthakore',
+	meta_merge => {
+		resources  => {
+			bugtracker => 'http://sdlperl.ath.cx/projects/SDLPerl/',
+			repository => 'http://github.com/kthakore/SDLx-Widgets'
+		}
+	},
+
     )->create_build_script;

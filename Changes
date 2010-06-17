@@ -1,5 +1,12 @@
 Revision history for Perl module SDLx::Widget
 
+0.04 TBD
+    - updated examples [garu]
+
+0.03 
+    - Build.PL deps fixed
+    - Added missing Build.PL
+
 0.02
     - Fixed a critical bug
 
