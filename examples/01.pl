@@ -135,4 +135,16 @@ my $move_id  = $game->add_move_handler( \&on_move );
 my $event_id = $game->add_event_handler( \&on_event );
 my $show_id  = $game->add_show_handler( \&on_show );
 
+print <<'EOT';
+In this example, you should see two small squares, one blue
+and one red. The red square should move around in circles, while
+you can control the blue one with the keyboard arrow keys.
+
+Also, if you press the "print screen" key, it will save an image
+called shot0001.bmp in your current dir. Pressing it again will
+create a new screenshot file, with the index incremented. That is,
+assuming your system will propagate the "print screen" event :)
+
+To exit the demo, just close the window normally.
+EOT
 $game->run();
