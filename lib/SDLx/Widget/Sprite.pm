@@ -78,6 +78,19 @@ sub surface {
 }
 
 
+sub rect {
+    my ($self, $rect) = @_;
+
+    # short-circuit
+    return $self->{rect} unless $rect;
+
+    Carp::croak 'rect accepts only SDL::Rect objects'
+        unless $rect->isa('SDL::Rect');
+
+    return $self->{rect} = $rect;
+}
+
+
 sub width {
     my $self = shift;
     if (@_ == 1 ) {
