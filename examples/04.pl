@@ -17,8 +17,8 @@ my $sprite = SDLx::Widget::Sprite->new();
 
  $sprite->load('data/hero.png')->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff))->alpha(0xcc);
 
- $sprite->x(10);
- $sprite->y(10);
+ $sprite->x(0);
+ $sprite->y(0);
  $sprite->draw($disp);
 
  SDL::Video::update_rect($disp, 0, 0, 300,300);
@@ -26,7 +26,7 @@ my $sprite = SDLx::Widget::Sprite->new();
  SDL::delay( 300 );
 
  $sprite->alpha(0.20); 
- $sprite->draw_xy( $disp, 50, 50);
+ $sprite->draw_xy( $disp, 49, 49);
 
  SDL::Video::update_rect($disp, 0, 0, 300,300);
 

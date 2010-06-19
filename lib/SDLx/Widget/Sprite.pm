@@ -360,10 +360,10 @@ Uses the provided L<< SDL::Color >> object (or an array reference with red,
 green and blue values) as the color to be turned into transparent
 (see 'alpha' below).
 
-=item * alpha => $percentage
+=item * alpha => $percentage or $integer
 
 
-Uses $percentage as how much transparency to add to the surface. If you use
+Uses $percentage (0 <-> 1 ) or $integer ( 0x01 - 0xff) as how much transparency to add to the surface. If you use
 this, it is mandatory that you also provide the alpha_key (see above).
 
 =back
