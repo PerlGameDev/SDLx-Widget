@@ -437,6 +437,8 @@ Dustin Mays, C<< <dork.fish.wat@gmail.com> >>
 
 Breno G. de Oliveira, C<< <garu at cpan.org> >>
 
+Kartik Thakore C<< <kthakore at cpan.org> >>
+
 =head1 SEE ALSO
 
 L<< SDL::Surface >>, L<< SDL >>
