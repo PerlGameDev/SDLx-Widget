@@ -141,6 +141,22 @@ sub draw {
     return $self;
 }
 
+sub alpha_key {
+   my ($self, $color) = @_;
+
+   Carp::croak 'color must be a SDL::Color'
+        unless ref $color and $color->isa('SDL::Color');
+
+    $self->surface( SDL::Video::display_format($self->surface) );
+
+    my $pixel = SDL::Video::map_RGB($self->surface->format, $color->r, $color->g, $color->b); 
+
+    SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $pixel);
+
+
+   return $self;
+}
+
 1;
 __END__
 =head1 NAME
