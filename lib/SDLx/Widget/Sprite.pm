@@ -8,9 +8,6 @@ use SDL::Image;
 use SDL::Rect;
 use Carp ();
 
-our @ISA = qw(SDLx::Widget::Drawable);
-
-
 sub new {
     my ($class, %options) = @_;
     my $self = bless {}, ref $class || $class;
