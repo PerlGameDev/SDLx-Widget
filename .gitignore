@@ -4,4 +4,4 @@ _build/
 *META.yml
 MANIFEST
 MANIFEST.bak
-
+*.swp
