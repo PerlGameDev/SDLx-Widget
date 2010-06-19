@@ -133,6 +133,7 @@ sub draw {
 	Carp::croak 'destination must be a SDL::Surface'
 	unless ref $surface and $surface->isa('SDL::Surface');
 
+
 	SDL::Video::blit_surface( $self->surface,
 		$self->clip,
 		$surface,
@@ -152,12 +153,9 @@ sub alpha_key {
 
 	my $surf = $self->surface();
 
-	$surf = SDL::Video::display_format_alpha($surf);
-	$self->surface( SDL::Video::display_format($surf) ) if ref $surf and $surf->isa('SDL::Surface');
+	$self->{surface} =  SDL::Video::display_format($surf);
 
-	my $pixel = SDL::Video::map_RGB($self->surface->format, $color->r, $color->g, $color->b); 
-
-	SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $pixel);
+	Carp::carp SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color);
 
 
 	return $self;
@@ -426,6 +424,8 @@ Returns the own Sprite object, to allow method chaining.
 Dustin Mays, C<< <dork.fish.wat@gmail.com> >>
 
 Breno G. de Oliveira, C<< <garu at cpan.org> >>
+
+Kartik thakore C<< <kthakore at cpan.org> >>
 
 =head1 SEE ALSO
 

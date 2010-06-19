@@ -2,8 +2,10 @@ use strict;
 use SDL;
 use SDL::Video;
 use SDL::Color;
-use SDLx::Widget::Sprite;
+use SDL::Rect;
 use SDL::Surface;
+
+use SDLx::Widget::Sprite;
 
 
 
@@ -23,8 +25,8 @@ my $sprite = SDLx::Widget::Sprite->new();
  $sprite->y(10);
  $sprite->draw($disp);
 
+			   
 
+ SDL::Video::update_rect($disp, 0, 0, 300,300);
 
- SDL::Video::flip($disp);
-
-sleep( 2 );
+ SDL::delay( 300 );
