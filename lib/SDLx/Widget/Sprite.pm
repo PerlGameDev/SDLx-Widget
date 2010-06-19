@@ -364,8 +364,8 @@ that's not an SDL::Surface object (or SDL::Surface subclassed objects).
 Returns the destination L<< SDL::Rect >> object used when you call draw().
 
 If you haven't explicitly set it, it will be a SDL::Rect with the same
-dimensions as the object's internal surface, or C<undef> if no
-surface was set yet.
+dimensions as the object's internal surface. If no surface was set yet,
+it will be an empty SDL::Rect (dimensions 0,0,0,0).
 
 If you pass it a L<< SDL::Rect >> object, it will set rect() to that object
 before returning, but it will B<overwrite> any width and height values, as
@@ -383,8 +383,8 @@ You can use this method to choose only a small subset of the object's
 internal surface to be used on calls to draw().
 
 If you haven't explicitly set it, it will be a SDL::Rect with the same
-dimensions as the object's internal surface, or C<undef> if no
-surface was set yet.
+dimensions as the object's internal surface. If no surface was set yet,
+it will be an empty SDL::Rect (dimensions 0,0,0,0).
 
 If you pass it a L<< SDL::Rect >> object, it will set clip() to that object
 before returning.
