@@ -91,6 +91,19 @@ sub rect {
 }
 
 
+sub clip {
+    my ($self, $clip) = @_;
+
+    # short-circuit
+    return $self->{clip} unless $clip;
+
+    Carp::croak 'clip accepts only SDL::Rect objects'
+        unless $clip->isa('SDL::Rect');
+
+    return $self->{clip} = $clip;
+}
+
+
 sub width {
     my $self = shift;
     if (@_ == 1 ) {
