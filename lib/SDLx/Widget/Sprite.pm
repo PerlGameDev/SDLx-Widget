@@ -39,6 +39,18 @@ sub new {
 }
 
 
+sub load {
+    my ($self, $filename) = @_;
+
+    require SDL::Image;
+    my $surface = SDL::Image::load( $filename )
+        or Carp::croak SDL::get_error;
+
+    $self->surface( $surface );
+    return $self;
+}
+
+
 sub width {
     my $self = shift;
     if (@_ == 1 ) {
