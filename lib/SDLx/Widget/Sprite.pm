@@ -70,6 +70,8 @@ SDL::Surface, SDL_Perl
 =cut
 
 package SDLx::Widget::Sprite;
+use strict;
+use warnings;
 
 use SDL;
 use SDL::Surface;
