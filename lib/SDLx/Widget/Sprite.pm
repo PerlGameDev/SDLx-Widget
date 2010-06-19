@@ -104,27 +104,9 @@ sub clip {
 }
 
 
-sub width {
-    my $self = shift;
-    if (@_ == 1 ) {
-        $self->{rect}->w = shift;
-    }
-    elsif ( @_ > 1 ) {
-        die "SDLx::Widget::Sprite->w() only accepts one argument.";
-    }
-    return $self->{rect}->w;
-}
+sub w { return shift->surface->w }
 
-sub height {
-    my $self = shift;
-    if ( @_ == 1 ) {
-        $self->{rect}->h = shift;
-    }
-    elsif ( @_ > 1 ) {
-        die "SDLx::Widget::Sprite->h() only accepts one argument.";
-    }
-    return $self->{rect}->h;
-}
+sub h { return shift->surface->h }
 
 sub x {
     my $self = shift;
