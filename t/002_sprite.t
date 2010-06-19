@@ -1,7 +1,16 @@
 use strict;
 use Test::More;
+use SDL;
+use SDL::Video;
 use SDL::Color;
 use SDLx::Widget::Sprite;
+
+my $videodriver       = $ENV{SDL_VIDEODRIVER};
+$ENV{SDL_VIDEODRIVER} = 'dummy' unless $ENV{SDL_RELEASE_TESTING};
+
+SDL::init(SDL_INIT_VIDEO);
+
+my $disp = SDL::Video::set_video_mode( 300, 300, 32, SDL_ANYFORMAT);
 
 my $sprite = SDLx::Widget::Sprite->new();
 
@@ -19,3 +28,14 @@ TODO:
 }
 
 done_testing;
+
+#reset the old video driver
+if($videodriver)
+{
+	$ENV{SDL_VIDEODRIVER} = $videodriver;
+}
+else
+{
+	delete $ENV{SDL_VIDEODRIVER};
+}
+

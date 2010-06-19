@@ -10,96 +10,96 @@ use SDL::Surface;
 use Carp ();
 
 sub new {
-    my ($class, %options) = @_;
-    my $self = bless {}, ref $class || $class;
+	my ($class, %options) = @_;
+	my $self = bless {}, ref $class || $class;
 
-    # short-circuit
-    return $self unless %options;
+	# short-circuit
+	return $self unless %options;
 
-    Carp::croak 'rect cannot be instantiated together with x or y'
-        if exists $options{rect} and (exists $options{x} or exists $options{y});
+	Carp::croak 'rect cannot be instantiated together with x or y'
+	if exists $options{rect} and (exists $options{x} or exists $options{y});
 
-    Carp::croak 'image and surface cannot be instantiated together'
-        if exists $options{image} and exists $options{surface};
+	Carp::croak 'image and surface cannot be instantiated together'
+	if exists $options{image} and exists $options{surface};
 
-    # note: ordering here is somewhat important. If you change anything,
-    # please rerun the test suite to make sure everything still works :)
-    $self->rect($options{rect})           if exists $options{rect};
-    $self->clip($options{clip})           if exists $options{clip};
-    $self->load($options{image})          if exists $options{image};
-    $self->surface($options{surface})     if exists $options{surface};
-    $self->x($options{x})                 if exists $options{x};
-    $self->y($options{y})                 if exists $options{y};
+	# note: ordering here is somewhat important. If you change anything,
+	# please rerun the test suite to make sure everything still works :)
+	$self->rect($options{rect})           if exists $options{rect};
+	$self->clip($options{clip})           if exists $options{clip};
+	$self->load($options{image})          if exists $options{image};
+	$self->surface($options{surface})     if exists $options{surface};
+	$self->x($options{x})                 if exists $options{x};
+	$self->y($options{y})                 if exists $options{y};
 #    $self->rotation($options{rotation})   if exists $options{rotation};
 #    $self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
 #    $self->alpha($options{alpha})         if exists $options{alpha};
 
-    return $self;
+	return $self;
 }
 
 
 sub load {
-    my ($self, $filename) = @_;
+	my ($self, $filename) = @_;
 
-    require SDL::Image;
-    my $surface = SDL::Image::load( $filename )
-        or Carp::croak SDL::get_error;
+	require SDL::Image;
+	my $surface = SDL::Image::load( $filename )
+		or Carp::croak SDL::get_error;
 
-    $self->surface( $surface );
-    return $self;
+	$self->surface( $surface );
+	return $self;
 }
 
 
 sub surface {
-    my ($self, $surface) = @_;
+	my ($self, $surface) = @_;
 
-    # short-circuit
-    return $self->{surface} unless $surface;
+	# short-circuit
+	return $self->{surface} unless $surface;
 
-    Carp::croak 'surface accepts only SDL::Surface objects'
-        unless $surface->isa('SDL::Surface');
+	Carp::croak 'surface accepts only SDL::Surface objects'
+	unless $surface->isa('SDL::Surface');
 
-    my $old_surface = $self->{surface};
-    $self->{surface} = $surface;
+	my $old_surface = $self->{surface};
+	$self->{surface} = $surface;
 
-    if (my $rect = $self->rect) {
-        $rect->w( $surface->w );
-        $rect->h( $surface->h );
-    }
-    else {
-        $self->rect( SDL::Rect->new(0, 0, $surface->w, $surface->h) );
-    }
+	if (my $rect = $self->rect) {
+		$rect->w( $surface->w );
+		$rect->h( $surface->h );
+	}
+	else {
+		$self->rect( SDL::Rect->new(0, 0, $surface->w, $surface->h) );
+	}
 
-    $self->clip( SDL::Rect->new(0, 0, $surface->w, $surface->h) )
-        unless $self->clip;
+	$self->clip( SDL::Rect->new(0, 0, $surface->w, $surface->h) )
+	unless $self->clip;
 
-    return $old_surface;
+	return $old_surface;
 }
 
 
 sub rect {
-    my ($self, $rect) = @_;
+	my ($self, $rect) = @_;
 
-    # short-circuit
-    return $self->{rect} unless $rect;
+	# short-circuit
+	return $self->{rect} unless $rect;
 
-    Carp::croak 'rect accepts only SDL::Rect objects'
-        unless $rect->isa('SDL::Rect');
+	Carp::croak 'rect accepts only SDL::Rect objects'
+	unless $rect->isa('SDL::Rect');
 
-    return $self->{rect} = $rect;
+	return $self->{rect} = $rect;
 }
 
 
 sub clip {
-    my ($self, $clip) = @_;
+	my ($self, $clip) = @_;
 
-    # short-circuit
-    return $self->{clip} unless $clip;
+	# short-circuit
+	return $self->{clip} unless $clip;
 
-    Carp::croak 'clip accepts only SDL::Rect objects'
-        unless $clip->isa('SDL::Rect');
+	Carp::croak 'clip accepts only SDL::Rect objects'
+	unless $clip->isa('SDL::Rect');
 
-    return $self->{clip} = $clip;
+	return $self->{clip} = $clip;
 }
 
 
@@ -108,53 +108,59 @@ sub w { return shift->surface->w }
 sub h { return shift->surface->h }
 
 sub x {
-    my ($self, $x) = @_;
+	my ($self, $x) = @_;
 
-    if ($x) {
-        $self->rect->x($x);
-    }
+	if ($x) {
+		$self->rect->x($x);
+	}
 
-    return $x;
+	return $x;
 }
 
 sub y {
-    my ($self, $y) = @_;
+	my ($self, $y) = @_;
 
-    if ($y) {
-        $self->rect->y($y);
-    }
+	if ($y) {
+		$self->rect->y($y);
+	}
 
-    return $y;
+	return $y;
 }
 
 sub draw {
-    my ($self, $surface) = @_;
+	my ($self, $surface) = @_;
 
-    Carp::croak 'destination must be a SDL::Surface'
-        unless ref $surface and $surface->isa('SDL::Surface');
+	Carp::croak 'destination must be a SDL::Surface'
+	unless ref $surface and $surface->isa('SDL::Surface');
 
-    SDL::Video::blit_surface( $self->surface,
-                              $self->clip,
-                              $surface,
-                              $self->rect
-                            );
-    return $self;
+	SDL::Video::blit_surface( $self->surface,
+		$self->clip,
+		$surface,
+		$self->rect
+	);
+	return $self;
 }
 
 sub alpha_key {
-   my ($self, $color) = @_;
+	my ($self, $color) = @_;
 
-   Carp::croak 'color must be a SDL::Color'
-        unless ref $color and $color->isa('SDL::Color');
+	Carp::croak 'color must be a SDL::Color'
+	unless ref $color and $color->isa('SDL::Color');
 
-    $self->surface( SDL::Video::display_format($self->surface) );
+	Carp::croak 'SDL::Video::set_video_mode must be called first'
+	unless ref SDL::Video::get_video_surface();
 
-    my $pixel = SDL::Video::map_RGB($self->surface->format, $color->r, $color->g, $color->b); 
+	my $surf = $self->surface();
 
-    SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $pixel);
+	$surf = SDL::Video::display_format_alpha($surf);
+	$self->surface( SDL::Video::display_format($surf) ) if ref $surf and $surf->isa('SDL::Surface');
+
+	my $pixel = SDL::Video::map_RGB($self->surface->format, $color->r, $color->g, $color->b); 
+
+	SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $pixel);
 
 
-   return $self;
+	return $self;
 }
 
 1;
@@ -218,13 +224,13 @@ SDLx::Widget::Sprite - interact with images quick and easily in SDL
 
     # spawning can include almost all of the above:
     my $sprite = SDLx::Widget::Sprite->new(
-                      image   => 'hero.png',   # or surface => SDL::Surface
-                      rect    => SDL::Rect,    # or x => $x, y => $y
-                      clip    => SDL::Rect,
-                      alpha_key => SDL::Color, # or [$r, $g, $b]
-                      alpha     => 1,
-                      rotation  => 3.14, # rads
-                 );
+		      image   => 'hero.png',   # or surface => SDL::Surface
+		      rect    => SDL::Rect,    # or x => $x, y => $y
+		      clip    => SDL::Rect,
+		      alpha_key => SDL::Color, # or [$r, $g, $b]
+		      alpha     => 1,
+		      rotation  => 3.14, # rads
+		 );
 
 
 =head1 DESCRIPTION
