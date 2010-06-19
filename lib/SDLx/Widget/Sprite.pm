@@ -29,9 +29,9 @@ sub new {
     $self->surface($options{surface})     if exists $options{surface};
     $self->x($options{x})                 if exists $options{x};
     $self->y($options{y})                 if exists $options{y};
-    $self->rotation($options{rotation})   if exists $options{rotation};
-    $self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
-    $self->alpha($options{alpha})         if exists $options{alpha};
+#    $self->rotation($options{rotation})   if exists $options{rotation};
+#    $self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
+#    $self->alpha($options{alpha})         if exists $options{alpha};
 
     return $self;
 }
