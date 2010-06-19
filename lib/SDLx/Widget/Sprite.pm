@@ -10,34 +10,34 @@ use SDL::Surface;
 use Carp ();
 
 sub new {
-    my ($class, %options) = @_;
-    my $self = bless {}, ref $class || $class;
+	my ($class, %options) = @_;
+	my $self = bless {}, ref $class || $class;
 
 	# create our two initial rects
-    $self->rect( exists $options{rect} ? $options{rect}
-                                       : SDL::Rect->new(0,0,0,0)
-               );
-    $self->clip( exists $options{clip} ? $options{clip}
-                                       : SDL::Rect->new(0,0,0,0)
-               );
+	$self->rect( exists $options{rect} ? $options{rect}
+		: SDL::Rect->new(0,0,0,0)
+	);
+	$self->clip( exists $options{clip} ? $options{clip}
+		: SDL::Rect->new(0,0,0,0)
+	);
 
-    # short-circuit
-    return $self unless %options;
+	# short-circuit
+	return $self unless %options;
 
-    Carp::croak 'rect cannot be instantiated together with x or y'
-        if exists $options{rect} and (exists $options{x} or exists $options{y});
+	Carp::croak 'rect cannot be instantiated together with x or y'
+	if exists $options{rect} and (exists $options{x} or exists $options{y});
 
-    Carp::croak 'image and surface cannot be instantiated together'
-        if exists $options{image} and exists $options{surface};
+	Carp::croak 'image and surface cannot be instantiated together'
+	if exists $options{image} and exists $options{surface};
 
-    # note: ordering here is somewhat important. If you change anything,
-    # please rerun the test suite to make sure everything still works :)
-    $self->load($options{image})          if exists $options{image};
-    $self->surface($options{surface})     if exists $options{surface};
-    $self->x($options{x})                 if exists $options{x};
-    $self->y($options{y})                 if exists $options{y};
+	# note: ordering here is somewhat important. If you change anything,
+	# please rerun the test suite to make sure everything still works :)
+	$self->load($options{image})          if exists $options{image};
+	$self->surface($options{surface})     if exists $options{surface};
+	$self->x($options{x})                 if exists $options{x};
+	$self->y($options{y})                 if exists $options{y};
 #    $self->rotation($options{rotation})   if exists $options{rotation};
-    $self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
+	$self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
 #    $self->alpha($options{alpha})         if exists $options{alpha};
 
 	return $self;
@@ -63,16 +63,16 @@ sub surface {
 	return $self->{surface} unless $surface;
 
 	Carp::croak 'surface accepts only SDL::Surface objects'
-		unless $surface->isa('SDL::Surface');
+	unless $surface->isa('SDL::Surface');
 
 	my $old_surface = $self->{surface};
 	$self->{surface} = $surface;
 
-    # update our source and destination rects
-    $self->rect->w( $surface->w );
-    $self->rect->h( $surface->h );
-    $self->clip->w( $surface->w );
-    $self->clip->h( $surface->h );
+	# update our source and destination rects
+	$self->rect->w( $surface->w );
+	$self->rect->h( $surface->h );
+	$self->clip->w( $surface->w );
+	$self->clip->h( $surface->h );
 
 	return $old_surface;
 }
@@ -85,7 +85,7 @@ sub rect {
 	return $self->{rect} unless $rect;
 
 	Carp::croak 'rect accepts only SDL::Rect objects'
-		unless $rect->isa('SDL::Rect');
+	unless $rect->isa('SDL::Rect');
 
 	return $self->{rect} = $rect;
 }
@@ -98,7 +98,7 @@ sub clip {
 	return $self->{clip} unless $clip;
 
 	Carp::croak 'clip accepts only SDL::Rect objects'
-		unless $clip->isa('SDL::Rect');
+	unless $clip->isa('SDL::Rect');
 
 	return $self->{clip} = $clip;
 }
@@ -124,7 +124,7 @@ sub x {
 		$self->rect->x($x);
 	}
 
-    return $self->rect->x;
+	return $self->rect->x;
 }
 
 sub y {
@@ -134,7 +134,7 @@ sub y {
 		$self->rect->y($y);
 	}
 
-    return $self->rect->y;
+	return $self->rect->y;
 }
 
 sub draw {
@@ -156,16 +156,16 @@ sub alpha_key {
 	my ($self, $color) = @_;
 
 	Carp::croak 'color must be a SDL::Color'
-		unless ref $color and $color->isa('SDL::Color');
+	unless ref $color and $color->isa('SDL::Color');
 
 	Carp::croak 'SDL::Video::set_video_mode must be called first'
-		unless ref SDL::Video::get_video_surface();
+	unless ref SDL::Video::get_video_surface();
 
 	my $surf = $self->surface();
 
 	$self->{surface} =  SDL::Video::display_format($surf);
 
-	Carp::carp SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color);
+	SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color);
 
 
 	return $self;
