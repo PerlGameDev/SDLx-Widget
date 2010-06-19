@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use SDL;
-use SDL::Surface;
+use SDL::Image;
 use SDL::Rect;
 use Carp ();
 
