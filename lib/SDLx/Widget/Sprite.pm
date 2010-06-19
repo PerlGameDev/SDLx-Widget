@@ -152,6 +152,16 @@ sub draw {
 	return $self;
 }
 
+sub draw_xy 
+{
+   my ($self, $surface, $x, $y ) = @_;
+
+   $self->x($x);
+   $self->y($y);
+   return  $self->draw($surface);
+
+}
+
 sub alpha_key {
 	my ($self, $color) = @_;
 
@@ -180,8 +190,10 @@ sub alpha
 
 	my ($self, $value) = @_;
 
+	$value = int( $value * 0xff )	if $value < 1 and $value > 0;
+
 	$value = 0 if $value < 0;
-	$value = 128 if $value > 128;
+	$value = 0xff if $value > 0xff;
 
 	my $flags = SDL_SRCALPHA | SDL_RLEACCEL; #this should be predictive
 	if ( SDL::Video::set_alpha($self->surface, $flags, $value) < 0 )
@@ -328,6 +340,10 @@ Uses $y as the y-axis (top-to-bottom, 0 being topmost) positioning of
 the Sprite into the destination you call draw() upon. This option B<cannot>
 be used together with 'rect' (see above).
 
+=item * draw_xy => $surface, $x, $y
+
+A shortcut to draw at coordinates quickly. Calles x() , y() and draw()
+
 =item * rotation => $rads
 
 NOT YET IMPLEMENTED
@@ -338,9 +354,7 @@ library has support for GFX (see L<< Alien::SDL >> for details).
 
 =item * alpha_key => SDL::Color
 
-=item * alpha_key => [ $r, $g, $b ]
-
-NOT YET IMPLEMENTED
+MUST CALL L<< SDL::Video::get_video_mode >> prior to this. 
 
 Uses the provided L<< SDL::Color >> object (or an array reference with red,
 green and blue values) as the color to be turned into transparent
@@ -348,7 +362,6 @@ green and blue values) as the color to be turned into transparent
 
 =item * alpha => $percentage
 
-NOT YET IMPLEMENTED
 
 Uses $percentage as how much transparency to add to the surface. If you use
 this, it is mandatory that you also provide the alpha_key (see above).

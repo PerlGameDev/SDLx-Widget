@@ -56,8 +56,9 @@ isa_ok ( $sprite->load('data/hero.png'), 'SDLx::Widget::Sprite', '[load] works')
 
 isa_ok ( $sprite->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff)), 'SDLx::Widget::Sprite', '[alpha] works');
 
-isa_ok ( $sprite->alpha(0xcc), 'SDLx::Widget::Sprite', '[alpha] works');
+isa_ok ( $sprite->alpha(0xcc), 'SDLx::Widget::Sprite', '[alpha] integer works ');
 
+isa_ok ( $sprite->alpha(0.3), 'SDLx::Widget::Sprite', '[alpha]  percentage works');
 
 
 
