@@ -19,7 +19,7 @@ my $sprite = SDLx::Widget::Sprite->new();
  $sprite->load('data/hero.png');
 
  $sprite->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff));
-
+ $sprite->alpha(0xcc);
  $sprite->x(10);
  $sprite->y(10);
  $sprite->draw($disp);

@@ -18,7 +18,7 @@ can_ok('SDLx::Widget::Sprite', qw( new rect clip load surface x y
 TODO: {
     local $TODO = 'methods not implemented yet';
 
-    can_ok( 'SDLx::Widget::Sprite', qw( rotation alpha ) );
+    can_ok( 'SDLx::Widget::Sprite', qw( rotation ) );
 };
 
 
@@ -55,6 +55,9 @@ is($h, 0, 'no h defined upon raw initialization');
 isa_ok ( $sprite->load('data/hero.png'), 'SDLx::Widget::Sprite', '[load] works');
 
 isa_ok ( $sprite->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff)), 'SDLx::Widget::Sprite', '[alpha] works');
+
+isa_ok ( $sprite->alpha(0xcc), 'SDLx::Widget::Sprite', '[alpha] works');
+
 
 
 

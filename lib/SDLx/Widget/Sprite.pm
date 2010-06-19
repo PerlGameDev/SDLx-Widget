@@ -165,10 +165,32 @@ sub alpha_key {
 
 	$self->{surface} =  SDL::Video::display_format($surf);
 
-	SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color);
-
+	if ( SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color) < 0) 
+	{
+		Carp::croak ' alpha_key died :'.SDL::get_error ;
+	}
+	$self->{color_key} = 1; 
 
 	return $self;
+}
+
+
+sub alpha
+{
+
+	my ($self, $value) = @_;
+
+	$value = 0 if $value < 0;
+	$value = 128 if $value > 128;
+
+	my $flags = SDL_SRCALPHA | SDL_RLEACCEL; #this should be predictive
+	if ( SDL::Video::set_alpha($self->surface, $flags, $value) < 0 )
+	{
+		Carp::croak 'alpha died :'.SDL::get_error ;
+	}
+
+	return $self;
+	
 }
 
 1;
