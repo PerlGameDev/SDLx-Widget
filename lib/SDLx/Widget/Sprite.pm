@@ -51,6 +51,33 @@ sub load {
 }
 
 
+sub surface {
+    my ($self, $surface) = @_;
+
+    # short-circuit
+    return $self->{surface} unless $surface;
+
+    Carp::croak 'surface accepts only SDL::Surface objects'
+        unless $surface->isa('SDL::Surface');
+
+    my $old_surface = $self->{surface};
+    $self->{surface} = $surface;
+
+    if (my $rect = $self->rect) {
+        $rect->w( $surface->w );
+        $rect->h( $surface->h );
+    }
+    else {
+        $self->rect( SDL::Rect->new(0, 0, $surface->w, $surface->h) );
+    }
+
+    $self->clip( SDL::Rect->new(0, 0, $surface->w, $surface->h) )
+        unless $self->clip;
+
+    return $old_surface;
+}
+
+
 sub width {
     my $self = shift;
     if (@_ == 1 ) {
