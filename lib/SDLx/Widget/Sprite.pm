@@ -6,6 +6,7 @@ use SDL;
 use SDL::Video;
 use SDL::Image;
 use SDL::Rect;
+use SDL::Surface;
 use Carp ();
 
 sub new {
