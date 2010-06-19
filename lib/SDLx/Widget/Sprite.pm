@@ -5,19 +5,39 @@ use warnings;
 use SDL;
 use SDL::Surface;
 use SDL::Rect;
+use Carp ();
 
 our @ISA = qw(SDLx::Widget::Drawable);
 
-sub new {
-    my $self = {};
-    my $class = shift;
-    
-    $self->{surface} = \shift;
-    $self->{rect} = \shift;
 
-    bless $self, $class;
+sub new {
+    my ($class, %options) = @_;
+    my $self = bless {}, ref $class || $class;
+
+    # short-circuit
+    return $self unless %options;
+
+    Carp::croak 'rect cannot be instantiated together with x or y'
+        if exists $options{rect} and (exists $options{x} or exists $options{y});
+
+    Carp::croak 'image and surface cannot be instantiated together'
+        if exists $options{image} and exists $options{surface};
+
+    # note: ordering here is somewhat important. If you change anything,
+    # please rerun the test suite to make sure everything still works :)
+    $self->rect($options{rect})           if exists $options{rect};
+    $self->clip($options{clip})           if exists $options{clip};
+    $self->load($options{image})          if exists $options{image};
+    $self->surface($options{surface})     if exists $options{surface};
+    $self->x($options{x})                 if exists $options{x};
+    $self->y($options{y})                 if exists $options{y};
+    $self->rotation($options{rotation})   if exists $options{rotation};
+    $self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
+    $self->alpha($options{alpha})         if exists $options{alpha};
+
     return $self;
 }
+
 
 sub width {
     my $self = shift;
