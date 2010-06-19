@@ -15,7 +15,6 @@ my $disp = SDL::Video::set_video_mode( 300, 300, 32, SDL_ANYFORMAT);
 
 my $sprite = SDLx::Widget::Sprite->new();
 
- $sprite, 'SDLx::Widget::Sprite';
 
  $sprite->load('data/hero.png');
 
