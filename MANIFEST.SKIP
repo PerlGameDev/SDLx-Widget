@@ -1,7 +1,7 @@
 .bak
 .tar.gz
 .git
-Build
+^Build$
 blib/
 _build/
 MYMETA.yml
