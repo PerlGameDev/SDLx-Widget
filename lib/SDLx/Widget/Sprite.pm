@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use SDL;
+use SDL::Video;
 use SDL::Image;
 use SDL::Rect;
 use Carp ();
@@ -129,14 +130,17 @@ sub y {
 }
 
 sub draw {
-    my $self = shift;
-    if (@_ == 2) {
-        my ($dest_surf, $dest_rect) = @_;
-        SDL::Video::blit_surface($self->{surface}, $self->{rect}, $dest_surf, $dest_rect);   
-    }
-    else {
-        die "SDLx::Widget::Sprite->draw() only accepts two arguments."
-    }
+    my ($self, $surface) = @_;
+
+    Carp::croak 'destination must be a SDL::Surface'
+        unless ref $surface and $surface->isa('SDL::Surface');
+
+    SDL::Video::blit_surface( $self->surface,
+                              $self->clip,
+                              $surface,
+                              $self->rect
+                            );
+    return $self;
 }
 
 1;
@@ -392,9 +396,10 @@ It is a shortcut to C<< $sprite->surface->h >>.
 =head2 draw( SDL::Surface )
 
 Draws the Sprite on the provided SDL::Surface object - usually the screen -
-using the blit SDL function, using the source rect from clip() and the
+using the blit_surface SDL function, using the source rect from clip() and the
 destination rect (position) from rect().
 
+Returns the own Sprite object, to allow method chaining.
 
 =head1 AUTHORS
 
