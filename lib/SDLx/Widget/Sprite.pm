@@ -109,25 +109,23 @@ sub w { return shift->surface->w }
 sub h { return shift->surface->h }
 
 sub x {
-    my $self = shift;
-    if ( @_ == 1 ) {
-        $self->{rect}->x = shift;
+    my ($self, $x) = @_;
+
+    if ($x) {
+        $self->rect->x($x);
     }
-    elsif ( @_ > 1 ) {
-        die "SDLx::Widget::Sprite->x() only accepts one argument.";
-    }
-    return $self->{rect}->x;
+
+    return $x;
 }
 
 sub y {
-    my $self = shift;
-    if ( @_ == 1 ) {
-        $self->{rect}->y = shift;
+    my ($self, $y) = @_;
+
+    if ($y) {
+        $self->rect->y($y);
     }
-    elsif ( @_ > 1 ) {
-        die "SDLx::Widget::Sprite->y() only accepts one argument.";
-    }
-    return $self->{rect}->y;
+
+    return $y;
 }
 
 sub draw {
