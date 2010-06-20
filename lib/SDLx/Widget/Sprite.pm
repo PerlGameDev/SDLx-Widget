@@ -36,7 +36,7 @@ sub new {
 	$self->surface($options{surface})     if exists $options{surface};
 	$self->x($options{x})                 if exists $options{x};
 	$self->y($options{y})                 if exists $options{y};
-#    $self->rotation($options{rotation})   if exists $options{rotation};
+    $self->rotation($options{rotation})   if exists $options{rotation};
 	$self->alpha_key($options{alpha_key}) if exists $options{alpha_key};
 #    $self->alpha($options{alpha})         if exists $options{alpha};
 
@@ -202,6 +202,24 @@ sub alpha
 	return $self;
 	
 }
+
+sub rotation {
+    my ($self, $angle) = @_;
+
+    if ($angle) {
+        require SDL::GFX::Rotozoom;
+        my $rotated = SDL::GFX::Rotozoom::surface(
+                         $self->surface,
+                         $angle,
+                         1, # zoom
+                         SDL::GFX::Rotozoom::SMOOTHING_ON
+                      ) or Carp::croak 'rotation error: ' . SDL::get_error;
+        $self->surface($rotated);
+        $self->{angle} = $angle;
+    }
+    return $self->{angle};
+}
+
 
 1;
 __END__
