@@ -207,7 +207,7 @@ sub rotation {
     my ($self, $angle) = @_;
 
     if ($angle) {
-        require SDL::GFX::Rotozoom;
+        use SDL::GFX::Rotozoom;
         my $rotated = SDL::GFX::Rotozoom::surface(
                          $self->surface,
                          $angle,
