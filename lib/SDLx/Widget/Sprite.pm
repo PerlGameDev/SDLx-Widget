@@ -171,9 +171,7 @@ sub alpha_key {
 	Carp::croak 'SDL::Video::set_video_mode must be called first'
 	unless ref SDL::Video::get_video_surface();
 
-	my $surf = $self->surface();
-
-	$self->{surface} =  SDL::Video::display_format($surf);
+	$self->surface( SDL::Video::display_format($self->surface) );
 
 	if ( SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color) < 0) 
 	{
