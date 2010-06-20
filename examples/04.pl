@@ -15,7 +15,7 @@ my $disp = SDL::Video::set_video_mode( 300, 300, 32, SDL_ANYFORMAT);
 
 my $sprite = SDLx::Widget::Sprite->new();
 
- $sprite->load('data/hero.png')->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff))->alpha(0xcc);
+ $sprite->load('data/chest.png')->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff))->alpha(0xcc);
 
  $sprite->x(0);
  $sprite->y(0);
