@@ -212,7 +212,7 @@ sub rotation {
                          $self->surface,
                          $angle,
                          1, # zoom
-                         SDL::GFX::Rotozoom::SMOOTHING_ON
+                         SDL::GFX::Rotozoom::SMOOTHING_OFF
                       ) or Carp::croak 'rotation error: ' . SDL::get_error;
         $self->surface($rotated);
         $self->{angle} = $angle;
