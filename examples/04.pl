@@ -30,5 +30,5 @@ my $sprite = SDLx::Widget::Sprite->new();
 
  SDL::Video::update_rect($disp, 0, 0, 300,300);
 
- SDL::delay( 1000 );
+ SDL::delay( 2000 );
 
