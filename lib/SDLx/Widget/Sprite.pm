@@ -206,6 +206,7 @@ sub alpha
 sub rotation {
     my ($self, $angle) = @_;
 
+    # TODO: preserve alpha key and alpha on rotation
     if ($angle) {
         use SDL::GFX::Rotozoom;
         my $rotated = SDL::GFX::Rotozoom::surface(
@@ -259,7 +260,7 @@ SDLx::Widget::Sprite - interact with images quick and easily in SDL
 
     # rotation() NOT YET IMPLEMENTED
     # if your SDL has gfx, rotation is also straightforward:
-    $sprite->rotation( $rads );
+    $sprite->rotation( $degrees );
 
     # add() / remove() NOT YET IMPLEMENTED
     # you can also attach other sprites to it
@@ -287,7 +288,7 @@ SDLx::Widget::Sprite - interact with images quick and easily in SDL
 		      clip    => SDL::Rect,
 		      alpha_key => SDL::Color, # or [$r, $g, $b]
 		      alpha     => 1,
-		      rotation  => 3.14, # rads
+		      rotation  => 45, # degrees
 		 );
 
 
@@ -360,12 +361,12 @@ be used together with 'rect' (see above).
 
 A shortcut to draw at coordinates quickly. Calles x() , y() and draw()
 
-=item * rotation => $rads
+=item * rotation => $degrees
 
 NOT YET IMPLEMENTED
 
-Uses $rads as the angle to rotate the surface to, in radians
-(0..2*PI, remember? :). This option is only available if your compiled SDL
+Uses $degrees as the angle to rotate the surface to, in degrees
+(0..360, remember? :). This option is only available if your compiled SDL
 library has support for GFX (see L<< Alien::SDL >> for details).
 
 =item * alpha_key => SDL::Color
