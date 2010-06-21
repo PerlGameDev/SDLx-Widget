@@ -209,7 +209,6 @@ sub rotation {
     # TODO: preserve alpha key and alpha on rotation
     if ($angle) {
         require SDL::GFX::Rotozoom;
-        SDL::GFX::Rotozoom->import;
         my $rotated = SDL::GFX::Rotozoom::surface(
                          $self->surface,
                          $angle,
