@@ -1,4 +1,4 @@
-package SDLx::Widget::Sprite;
+package SDLx::Sprite;
 use strict;
 use warnings;
 
@@ -226,13 +226,13 @@ sub rotation {
 __END__
 =head1 NAME
 
-SDLx::Widget::Sprite - interact with images quick and easily in SDL
+SDLx::Sprite - interact with images quick and easily in SDL
 
 =head1 SYNOPSIS
 
-    use SDLx::Widget::Sprite;
+    use SDLx::Sprite;
 
-    my $sprite = SDLx::Widget::Sprite->new;
+    my $sprite = SDLx::Sprite->new;
 
     # loads image file into a SDL::Surface and
     # automatically sets a SDL::Rect inside with
@@ -282,7 +282,7 @@ SDLx::Widget::Sprite - interact with images quick and easily in SDL
     $sprite->clip($x,$y,$w,$h);
 
     # spawning can include almost all of the above:
-    my $sprite = SDLx::Widget::Sprite->new(
+    my $sprite = SDLx::Sprite->new(
 		      image   => 'hero.png',   # or surface => SDL::Surface
 		      rect    => SDL::Rect,    # or x => $x, y => $y
 		      clip    => SDL::Rect,
@@ -294,7 +294,7 @@ SDLx::Widget::Sprite - interact with images quick and easily in SDL
 
 =head1 DESCRIPTION
 
-SDLx::Widget::Sprite is a SDL::Surface on steroids! It let's you quickly
+SDLx::Sprite is a SDL::Surface on steroids! It let's you quickly
 load, setup and interact with images in your SDL application, abstracting
 all the drudge code and letting you concentrate on your app's logic instead.
 
@@ -316,7 +316,7 @@ You have been warned :)
 
 =head2 new( %options )
 
-Creates a new SDLx::Widget::Sprite object. No option is mandatory.
+Creates a new SDLx::Sprite object. No option is mandatory.
 Available options are:
 
 =over 4

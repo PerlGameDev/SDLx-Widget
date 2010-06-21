@@ -4,21 +4,20 @@ use Test::More;
 use SDL;
 use SDL::Video;
 use SDL::Color;
-use SDLx::Widget::Sprite;
 
 BEGIN { 
-	use_ok( 'SDLx::Widget::Sprite' ) 
+	use_ok( 'SDLx::Sprite' )
 		or BAIL_OUT 'failed to load Sprite class - bailing'
 }
 
-can_ok('SDLx::Widget::Sprite', qw( new rect clip load surface x y 
+can_ok('SDLx::Sprite', qw( new rect clip load surface x y
                                    w h draw alpha_key)
       );
 
 TODO: {
     local $TODO = 'methods not implemented yet';
 
-    can_ok( 'SDLx::Widget::Sprite', qw( rotation ) );
+    can_ok( 'SDLx::Sprite', qw( rotation ) );
 };
 
 
@@ -29,11 +28,11 @@ SDL::init(SDL_INIT_VIDEO);
 
 my $disp = SDL::Video::set_video_mode( 300, 300, 32, SDL_ANYFORMAT);
 
-my $sprite = SDLx::Widget::Sprite->new;
+my $sprite = SDLx::Sprite->new;
 
 # test initial values
 ok($sprite, 'object defined');
-isa_ok ( $sprite, 'SDLx::Widget::Sprite');
+isa_ok ( $sprite, 'SDLx::Sprite');
 
 my $rect = $sprite->rect;
 ok($rect, 'rect defined upon raw initialization');
@@ -52,13 +51,13 @@ is($w, 0, 'no w defined upon raw initialization');
 is($h, 0, 'no h defined upon raw initialization');
 
 
-isa_ok ( $sprite->load('data/hero.png'), 'SDLx::Widget::Sprite', '[load] works');
+isa_ok ( $sprite->load('data/hero.png'), 'SDLx::Sprite', '[load] works');
 
-isa_ok ( $sprite->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff)), 'SDLx::Widget::Sprite', '[alpha] works');
+isa_ok ( $sprite->alpha_key(SDL::Color->new(0xfc, 0x00, 0xff)), 'SDLx::Sprite', '[alpha] works');
 
-isa_ok ( $sprite->alpha(0xcc), 'SDLx::Widget::Sprite', '[alpha] integer works ');
+isa_ok ( $sprite->alpha(0xcc), 'SDLx::Sprite', '[alpha] integer works ');
 
-isa_ok ( $sprite->alpha(0.3), 'SDLx::Widget::Sprite', '[alpha]  percentage works');
+isa_ok ( $sprite->alpha(0.3), 'SDLx::Sprite', '[alpha]  percentage works');
 
 
 
