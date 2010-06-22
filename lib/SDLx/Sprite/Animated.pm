@@ -119,7 +119,7 @@ SDLx::Sprite::Animated - create animated SDL sprites easily!
   $animation->type('circular'); # restarts loop at the beginning
   $animation->type('reverse');  # goes backwards
 
-  $animation->times(3); 0 or undef for infinite looping
+  $animation->max_loops(3); 0 or undef for infinite looping
 
 
   # as usual, you can setup most of the above during object spawning
@@ -182,7 +182,7 @@ Uses $integer as the number of pixels to move on the y-axis (top-to-bottom,
 0 being no dislocation whatsoever, when the strip goes from left to right)
 to reach the next frame.
 
-=item * times => $integer
+=item * max_loops => $integer
 
 Uses $integer as the number of times to loop the animation (when it reaches
 the end of the strip).
@@ -220,9 +220,9 @@ to reach the next frame.
 
 Defaults to the same height as the clip() rect.
 
-=head2 times()
+=head2 max_loops()
 
-=head2 times( $integer )
+=head2 max_loops( $integer )
 
 Uses $integer as the number of times to loop the animation (when it reaches
 the end of the strip). After that B<< all calls to previous() or next() will be no-ops >>.
@@ -251,13 +251,13 @@ frame in the strip. Available looping types are:
 
 Restarts loop at the beginning of the strip. If you have 4 frames, the flow
 will be 1-2-3-4-1-2-3-4-1-2-3-4-1-2-... up until the number of loops you
-set in the times() attribute.
+set in the max_loops() attribute.
 
 =item * 'reverse'
 
 Loops back and forth on the strip. If you have 4 frames, the flow will be
 1-2-3-4-3-2-1-2-3-4-3-2-... up until the number of loops you set in the
-times() attribute.
+max_loops() attribute.
 
 =back
 
@@ -272,7 +272,7 @@ Default value is 'circular'.
 Goes to the next frame in the strip. Calling this method will also reset
 the tick counter used by ticks_per_frame().
 
-If times() has reached its limit, this will be a no-op.
+If max_loops() has reached its limit, this will be a no-op.
 
 Returns the object, allowing method chaining.
 
@@ -281,7 +281,7 @@ Returns the object, allowing method chaining.
 Goes to the previous frame in the strip. Calling this method will also reset
 the tick counter used by ticks_per_frame().
 
-If times() has reached its limit, this will be a no-op.
+If max_loops() has reached its limit, this will be a no-op.
 
 Returns the object, allowing method chaining.
 
@@ -289,7 +289,7 @@ Returns the object, allowing method chaining.
 
 Goes to the first frame in the strip, meaning whatever clip is set to.
 
-If times() has reached its limit, this will be a no-op.
+If max_loops() has reached its limit, this will be a no-op.
 
 Returns the object, allowing method chaining.
 
@@ -302,7 +302,7 @@ is 1, second is 2, etc).
 
 Returns the loop counter, i.e. which run number is it at. This is also
 1-based (first time is 1, second time is 2, etc). Note that we only
-keep track of the counter if times() is set to a finite number. Otherwise,
+keep track of the counter if max_loops() is set to a finite number. Otherwise,
 this will be a no-op.
 
 =head1 start()
