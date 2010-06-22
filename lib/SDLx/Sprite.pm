@@ -143,7 +143,6 @@ sub draw {
 	Carp::croak 'destination must be a SDL::Surface'
 	unless ref $surface and $surface->isa('SDL::Surface');
 
-
 	SDL::Video::blit_surface( $self->surface,
 		$self->clip,
 		$surface,
@@ -183,9 +182,7 @@ sub alpha_key {
 }
 
 
-sub alpha
-{
-
+sub alpha {
 	my ($self, $value) = @_;
 
 	$value = int( $value * 0xff )	if $value < 1 and $value > 0;
@@ -194,13 +191,11 @@ sub alpha
 	$value = 0xff if $value > 0xff;
 
 	my $flags = SDL_SRCALPHA | SDL_RLEACCEL; #this should be predictive
-	if ( SDL::Video::set_alpha($self->surface, $flags, $value) < 0 )
-	{
+	if ( SDL::Video::set_alpha($self->surface, $flags, $value) < 0 ) {
 		Carp::croak 'alpha died :'.SDL::get_error ;
 	}
 
 	return $self;
-	
 }
 
 sub rotation {
