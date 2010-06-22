@@ -67,7 +67,7 @@ SDLx::Sprite::Animated - create animated SDL sprites easily!
 
 =head1 SYNOPSIS
 
-  use SDLx::Animation;
+  use SDLx::Sprite::Animated;
 
   # simplest possible form, where 'hero.png' is an image containing
   # fixed-length sprites in sequence. It doesn't matter if they are
