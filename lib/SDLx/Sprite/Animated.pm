@@ -1,61 +1,60 @@
 package SDLx::Sprite::Animated;
 
-use SDL;
-use SDL::Surface;
-use SDL::Rect;
-
 BEGIN { require SDLx::Sprite; our @ISA = qw(SDLx::Sprite) }
 
-sub new {
-    my $self = {};
-    my $class = shift;
-    
-    my $speed = shift;
-    my $loop_index = shift;
-    
-    my %cycles = shift;
-    
-    bless $self, $class;
+sub load {
+    my $self = shift;
+    warn "+++ THAT WOULD BE ME!!\n";
+    $self->SUPER::load( @_ );
+    $self->{direction} = 1;
+    $self->{current_frame} = 1;
+    $self->{total_frames} = 3;
 }
 
-sub play {
-    
+sub step_y {
+    my ($self, $step_y) = @_;
+
+    if ($step_y) {
+        $self->{step_y} = $step_y;
+    }
+
+    return $self->{step_y};
 }
 
-sub pause {
-    
-}
+sub next {
+    my $self = shift;
+    my $frame = $self->{current_frame} + 1 * $self->{direction};
 
-sub stop {
-    
-}
+    if ($frame == 1 or $frame == $self->{total_frames}) {
+        #TODO check type and max_loops
 
-sub backward {
-    
-}
-
-sub forward {
-    
+        #TODO: this is 'circular'
+        $self->{direction} *= -1;
+    }
+    $self->{current_frame} = $frame;
 }
 
 sub draw {
-    
-}
+	my ($self, $surface) = @_;
 
-sub loop_index {
-    
-}
+	Carp::croak 'destination must be a SDL::Surface'
+	unless ref $surface and $surface->isa('SDL::Surface');
 
-sub speed {
-    
-}
+    #TODO: make this suck less
+    my $clip = $self->clip;
+    my $source_frame = SDL::Rect->new(
+            $clip->x,
+            $clip->y + $self->step_y * ($self->{current_frame} - 1),
+            $clip->w,
+            $clip->h
+    );
 
-sub current_cycle {
-    
-}
-
-sub current_frame {
-    
+	SDL::Video::blit_surface( $self->surface,
+		$source_frame,
+		$surface,
+		$self->rect
+	);
+	return $self;
 }
 
 1;
