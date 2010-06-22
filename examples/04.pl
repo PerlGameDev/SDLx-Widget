@@ -6,7 +6,7 @@ use SDL::Rect;
 use SDL::Surface;
 use SDL::GFX::Rotozoom;
 
-use SDLx::Widget::Sprite;
+use SDLx::Sprite;
 
 
 
@@ -14,7 +14,7 @@ SDL::init(SDL_INIT_VIDEO);
 
 my $disp = SDL::Video::set_video_mode( 300, 300, 32, SDL_ANYFORMAT);
 
-my $sprite = SDLx::Widget::Sprite->new();
+my $sprite = SDLx::Sprite->new();
 
  $sprite->load('data/chest.png');
  $sprite->x(10);
