@@ -267,6 +267,66 @@ to be lowercase.
 
 Default value is 'circular'.
 
+=head2 next()
+
+Goes to the next frame in the strip. Calling this method will also reset
+the tick counter used by ticks_per_frame().
+
+If times() has reached its limit, this will be a no-op.
+
+Returns the object, allowing method chaining.
+
+=head2 previous()
+
+Goes to the previous frame in the strip. Calling this method will also reset
+the tick counter used by ticks_per_frame().
+
+If times() has reached its limit, this will be a no-op.
+
+Returns the object, allowing method chaining.
+
+=head2 reset()
+
+Goes to the first frame in the strip, meaning whatever clip is set to.
+
+If times() has reached its limit, this will be a no-op.
+
+Returns the object, allowing method chaining.
+
+=head2 current_frame()
+
+Returns the current frame number. Note that this is 1-based (first frame
+is 1, second is 2, etc).
+
+=head2 current_loop()
+
+Returns the loop counter, i.e. which run number is it at. This is also
+1-based (first time is 1, second time is 2, etc). Note that we only
+keep track of the counter if times() is set to a finite number. Otherwise,
+this will be a no-op.
+
+=head1 start()
+
+After you call this method, the object will issue a call to C<< ->next() >>
+automatically for you every time C<< ->draw() >> is called
+C<< ticks_per_frame() >> times.
+
+If you want to stop autoplay, see C<< stop() >> below.
+
+Default is off (no autoplay).
+
+=head1 stop()
+
+Stops autoplay. After you call this, the object will need you to call
+C<< ->previous() >> and C<< ->next() >> explicitly to change frames.
+
+To resume autoplay from wherever you are, use C<< start() >>.
+
+If you want to restart autoplay from the initial frame, just do:
+
+  $sprite->reset->start;
+
+
 =head1 AUTHORS
 
 Dustin Mays, C<< <dork.fish.wat@gmail.com> >>
