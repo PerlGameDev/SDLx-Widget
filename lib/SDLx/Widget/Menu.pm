@@ -172,35 +172,123 @@ sub render {
 
 42;
 __END__
+=head1 NAME
 
-=pod 
+SDLx::Widget::Menu - create menus for your SDL apps easily
 
-=head1 USAGE
+=head1 SYNOPSIS
 
 Create a simple SDL menu for your game/app:
 
-    SDLx::Item::Menu->new->items(
-        'New Game' => \&play,
-        'Options'  => \&settings,
-        'Quit'     => \&quit,
-    );
+    my $menu = SDLx::Widget::Menu->new->items(
+                   'New Game' => \&play,
+                   'Options'  => \&settings,
+                   'Quit'     => \&quit,
+               );
 
 
 Or customize it at will:
 
-    SDLx::Item::Menu->new(
-        topleft      => [100, 120],
-        font         => 'game/data/menu_font.ttf',
-        font_size    => 20,
-        font_color   => [255, 0, 0], # RGB (in this case, 'red')
-        select_color => [
+    my $menu = SDLx::Widget::Menu->new(
+                   topleft      => [100, 120],
+                   font         => 'game/data/menu_font.ttf',
+                   font_size    => 20,
+                   font_color   => [255, 0, 0], # RGB (in this case, 'red')
+                   select_color => [0, 255, 0],
+                   change_sound => 'game/data/menu_select.ogg',
+               )->items(
+                   'New Game' => \&play,
+                   'Options'  => \&settings,
+                   'Quit'     => \&quit,
+               );
 
-=head2 TODO
+After that, all you have to do is make sure your menu object's hooks are
+called at the right time in your game loop:
 
-docs
+    # in the event loop
+    $menu->event_hook( $event );  # $event is a SDL::Event
 
-=head1 AUTHOR
+    # in the rendering loop
+    $menu->render( $screen );     # $screen is a SDL::Surface
 
-breno
 
-=cut
+=head1 DESCRIPTION
+
+Main menus are a very common thing in games. They let the player choose
+between a new game, loading games, setting up controls, among lots of other
+stuff. This menu widget is meant to aid developers create menus quickly and easily, so they can concentrate in their game's logic rather than on such a
+repetitive task. Simple menus, easy. Complex menus, possible!
+
+
+=head1 WARNING! VOLATILE CODE AHEAD
+
+This is a new module and the API is subject to change without notice.
+If you care, please join the discussion on the #sdl IRC channel in
+I<irc.perl.org>. All thoughts on further improving the API are welcome.
+
+You have been warned :)
+
+=head1 METHODS
+
+=head2 new
+
+=head2 new( %options )
+
+Creates a new SDLx::Widget::Menu object. No option is mandatory.
+Available options are:
+
+=over 4
+
+=item * topleft => [ $top, $left ]
+
+Determines topmost and leftmost positions for the menu.
+
+=item * font => $filename
+
+File name of the font used to render menu text.
+
+=item * font_size => $size
+
+Size of the font used to render menu text.
+
+=item * font_color => [ $red, $green, $blue ]
+
+RGB value to set the font color.
+
+=item * select_color => [ $red, $green, $blue ]
+
+RGB value for the font color of the select item
+
+=item * change_sound => $filename
+
+File name of the sound to play when the selected item changes
+
+=back
+
+=head2 items( 'Item 1' => \&sub1, 'Item 2' => \&sub2, ... )
+
+Creates menu items, setting up callbacks for each item.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item * Mouse doesn't work (yet)
+
+=item * Doesn't let you setup other keys to change current selection (yet)
+
+=item * Doesn't let you handle menu changes yourself (yet)
+
+=back
+
+=head1 AUTHORS
+
+Breno G. de Oliveira, C<< <garu at cpan.org> >>
+
+Kartik thakore C<< <kthakore at cpan.org> >>
+
+
+=head1 SEE ALSO
+
+L<< SDL >>, L<< SDLx::App >>, L<< SDLx::Controller >>
+
