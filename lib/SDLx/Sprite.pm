@@ -34,6 +34,7 @@ sub new {
 	# please rerun the test suite to make sure everything still works :)
 	$self->load($options{image})          if exists $options{image};
 	$self->surface($options{surface})     if exists $options{surface};
+	$self->{orig_surface} = $options{surface}      if exists $options{surface};
 	$self->x($options{x})                 if exists $options{x};
 	$self->y($options{y})                 if exists $options{y};
     $self->rotation($options{rotation})   if exists $options{rotation};
@@ -50,7 +51,7 @@ sub load {
 	require SDL::Image;
 	my $surface = SDL::Image::load( $filename )
 		or Carp::croak SDL::get_error;
-
+	$self->{orig_surface} = $surface unless $self->{orig_surface};
 	$self->surface( $surface );
 	return $self;
 }
@@ -169,7 +170,7 @@ sub alpha_key {
 
 	Carp::croak 'SDL::Video::set_video_mode must be called first'
 	unless ref SDL::Video::get_video_surface();
-
+	$self->{alpha_key} = $color; # keep a copy just in case
 	$self->surface( SDL::Video::display_format($self->surface) );
 
 	if ( SDL::Video::set_color_key($self->surface, SDL_SRCCOLORKEY, $color) < 0) 
@@ -189,6 +190,7 @@ sub alpha {
 
 	$value = 0 if $value < 0;
 	$value = 0xff if $value > 0xff;
+	$self->{alpha} = $value; # keep a copy just in case
 
 	my $flags = SDL_SRCALPHA | SDL_RLEACCEL; #this should be predictive
 	if ( SDL::Video::set_alpha($self->surface, $flags, $value) < 0 ) {
@@ -199,18 +201,19 @@ sub alpha {
 }
 
 sub rotation {
-    my ($self, $angle) = @_;
-
-    # TODO: preserve alpha key and alpha on rotation
-    if ($angle) {
+    my ($self, $angle, $smooth) = @_;
+    if ($angle && $self->{orig_surface}) {
         require SDL::GFX::Rotozoom;
+        
         my $rotated = SDL::GFX::Rotozoom::surface(
-                         $self->surface,
+                         $self->{orig_surface}, #prevents rotting of the surface
                          $angle,
                          1, # zoom
-                         1 
+                         (defined $smooth && $smooth != 0) 
 		 ) or Carp::croak 'rotation error: ' . SDL::get_error;
-        $self->surface($rotated);
+        $self->surface($rotated); 
+        $self->alpha_key( $self->{alpha_key} ) if $self->{alpha_key};
+        $self->alpha( $self->{alpha} ) if $self->{alpha};
         $self->{angle} = $angle;
     }
     return $self->{angle};
@@ -253,9 +256,12 @@ SDLx::Sprite - interact with images quick and easily in SDL
     # you can get the surface object too if you need it
     my $surface = $sprite->surface;
 
-    # rotation() NOT YET IMPLEMENTED
+    # rotation() 
+
     # if your SDL has gfx, rotation is also straightforward:
     $sprite->rotation( $degrees );
+    $sprite->rotation( $degrees, $smooth );
+
 
     # add() / remove() NOT YET IMPLEMENTED
     # you can also attach other sprites to it
@@ -356,13 +362,13 @@ be used together with 'rect' (see above).
 
 A shortcut to draw at coordinates quickly. Calles x() , y() and draw()
 
-=item * rotation => $degrees
-
-NOT YET IMPLEMENTED
+=item * rotation => $degrees, [$smooth]
 
 Uses $degrees as the angle to rotate the surface to, in degrees
 (0..360, remember? :). This option is only available if your compiled SDL
 library has support for GFX (see L<< Alien::SDL >> for details).
+
+if $smooth is set the spirte is antialiased. This may mess with your alpha_key.
 
 =item * alpha_key => SDL::Color
 
@@ -487,4 +493,3 @@ Kartik thakore C<< <kthakore at cpan.org> >>
 =head1 SEE ALSO
 
 L<< SDL::Surface >>, L<< SDL >>
-
