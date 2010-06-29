@@ -201,8 +201,7 @@ sub alpha {
 }
 
 sub rotation {
-    my ($self, $angle) = @_;
-    # TODO: preserve alpha key and alpha on rotation
+    my ($self, $angle, $smooth) = @_;
     if ($angle && $self->{orig_surface}) {
         require SDL::GFX::Rotozoom;
         
@@ -210,7 +209,7 @@ sub rotation {
                          $self->{orig_surface}, #prevents rotting of the surface
                          $angle,
                          1, # zoom
-                         0 
+                         (defined $smooth && $smooth != 0) 
 		 ) or Carp::croak 'rotation error: ' . SDL::get_error;
         $self->surface($rotated); 
         $self->alpha_key( $self->{alpha_key} ) if $self->{alpha_key};
@@ -257,9 +256,12 @@ SDLx::Sprite - interact with images quick and easily in SDL
     # you can get the surface object too if you need it
     my $surface = $sprite->surface;
 
-    # rotation() NOT YET IMPLEMENTED
+    # rotation() 
+
     # if your SDL has gfx, rotation is also straightforward:
     $sprite->rotation( $degrees );
+    $sprite->rotation( $degrees, $smooth );
+
 
     # add() / remove() NOT YET IMPLEMENTED
     # you can also attach other sprites to it
@@ -360,13 +362,13 @@ be used together with 'rect' (see above).
 
 A shortcut to draw at coordinates quickly. Calles x() , y() and draw()
 
-=item * rotation => $degrees
-
-NOT YET IMPLEMENTED
+=item * rotation => $degrees, [$smooth]
 
 Uses $degrees as the angle to rotate the surface to, in degrees
 (0..360, remember? :). This option is only available if your compiled SDL
 library has support for GFX (see L<< Alien::SDL >> for details).
+
+if $smooth is set the spirte is antialiased. This may mess with your alpha_key.
 
 =item * alpha_key => SDL::Color
 
