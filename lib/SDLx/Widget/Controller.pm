@@ -128,6 +128,18 @@ sub remove_all_handlers {
     $_[0]->{show_handlers}  = [];
 }
 
+sub remove_all_move_handlers {
+    $_[0]->{move_handlers} = [];
+}
+
+sub remove_all_event_handlers {
+    $_[0]->{event_handlers} = [];
+}
+
+sub remove_all_show_handlers {
+    $_[0]->{show_handlers} = [];
+}
+
 
 1;    #not 42 man!
 
@@ -260,9 +272,17 @@ Removes the handler with the given index from the respective calling queue.
 
 Returns the removed handler.
 
+=head2 remove_all_move_handlers
+
+=head2 remove_all_event_handlers
+
+=head2 remove_all_show_handlers
+
+Removes all handlers from the respective calling queue.
+
 =head2 remove_all_handlers
 
-Quick access to removing all handlers.
+Quick access to removing all handlers at once.
 
 
 =head1 AUTHOR
