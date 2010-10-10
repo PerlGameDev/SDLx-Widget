@@ -24,12 +24,14 @@ sub new {
 
 my $textbox = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 0, v_y=> 0 );
 $textbox->set_acceleration ( 
-      sub {
-         my ($time, $current_state) = @_; 
+    sub {
+        my ($time, $current_state) = @_; 
+        return ( 0.1, 0, 0 );
+    }
+);
+my $focus  = 0;
+my $cursor = 0;
 
-         return ( 0.1, 0, 0 );
-      }
-  );
 my $textbox_render = sub {
     my ($state, $self) = @_;
     $self->{app}->draw_rect( [$self->{x}, $self->{y}, $self->{w}, $self->{h}], [255,255,255,255] );
@@ -42,7 +44,6 @@ sub show {
     $textbox->attach( $self->{app}, $textbox_render, $self );
 }
 
-my $focus = 0;
 sub event_handler {
     my ($self, $event, $app) = @_;
     
@@ -77,8 +78,28 @@ sub event_handler {
     elsif(SDL_KEYDOWN == $event->type) {
         if($focus) {
             warn "on_keydown";
-            if($event->key_unicode) {
+            my $key = SDL::Events::get_key_name($event->key_sym);
+            if($key eq 'left') {
+                $cursor-- if $cursor > 0;
+            }
+            elsif($key eq 'right') {
+                $cursor++ if $cursor < length($self->{value});
+            }
+            elsif($key eq 'delete') {
+                if($cursor < length($self->{value})) {
+                    $self->{value} = substr($self->{value}, 0, $cursor)
+                                   . substr($self->{value}, $cursor + 1);
+                }
+            }
+            elsif($key eq 'backspace') {
+                if($cursor > 0) {
+                    $self->{value} = substr($self->{value}, 0, length($self->{value}) - 1);
+                    $cursor--;
+                }
+            }
+            elsif($event->key_unicode) {
                 $self->{value} .= chr($event->key_unicode);
+                $cursor++;
             }
         }
     }
