@@ -12,40 +12,44 @@ use SDL::TTF;
 use Encode;
 
 sub new {
-    my $class         = shift;
-    my %params        = @_;
-    my $self          = \%params;
-       $self->{value} = '';
-       $self          = bless $self, $class;
-       $self->{app}->add_event_handler( sub{$self->event_handler(@_)} );
-       SDL::Events::enable_unicode(1);
+    my $class          = shift;
+    my %params         = @_;
+    my $self           = \%params;
+    $self->{value}     = '';
+    $self->{focus}     = 0;
+    $self->{cursor}    = 0;
+    $self->{textbox}   = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 1, v_y=> 0 );
+    $self->{textbox}->set_acceleration( sub { return ( 0, 0, 0 ); } );
+    $self->{textbox_render} = sub {
+        my ($state, $_self) = @_;
+        $_self->{app}->draw_rect( [$_self->{x}, $_self->{y}, $_self->{w}, $_self->{h}], [255,255,255,255] );
+        if($_self->{name} && !length($_self->{value}) && !$_self->{focus}) {
+            $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0xAAAAAAFF, $_self->{name} );
+        }
+        elsif($_self->{password}) {
+            $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0x000000FF, '*' x length($_self->{value}) );
+        }
+        else {
+            $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0x000000FF, $_self->{value} );
+        }
+        if($_self->{focus} && ($state->x / 3) & 1) {
+            my $x = $_self->{x} + 2 + $_self->{cursor} * 8;
+            $_self->{app}->draw_line( [$x, $_self->{y} + 2], [$x, $_self->{y} + $_self->{h} - 4], 0x000000FF, 0 );
+        }
+        $_self->{app}->update;
+    };
+
+    $self           = bless $self, $class;
+    $self->{app}->add_event_handler( sub{$self->event_handler(@_)} );
+    SDL::Events::enable_unicode(1);
+
     return $self;
 }
 
-my $textbox = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 1, v_y=> 0 );
-$textbox->set_acceleration ( 
-    sub {
-        my ($time, $current_state) = @_; 
-        return ( 0, 0, 0 );
-    }
-);
-my $focus  = 0;
-my $cursor = 0;
-
-my $textbox_render = sub {
-    my ($state, $self) = @_;
-    $self->{app}->draw_rect( [$self->{x}, $self->{y}, $self->{w}, $self->{h}], [255,255,255,255] );
-    $self->{app}->draw_gfx_text( [$self->{x} + 3, $self->{y} + 7], 0x000000FF, $self->{value} );
-    if(($state->x / 3) & 1) {
-        my $x = $self->{x} + 2 + $cursor * 8;
-        $self->{app}->draw_line( [$x, $self->{y} + 2], [$x, $self->{y} + $self->{h} - 4], 0x000000FF, 0 );
-    }
-    $self->{app}->update;
-};
 
 sub show {
     my $self = shift;
-    $textbox->attach( $self->{app}, $textbox_render, $self );
+    $self->{textbox}->attach( $self->{app}, $self->{textbox_render}, $self );
 }
 
 sub event_handler {
@@ -61,9 +65,9 @@ sub event_handler {
         if($self->{x} <= $event->button_x && $event->button_x < $self->{x} + $self->{w}
         && $self->{y} <= $event->button_y && $event->button_y < $self->{y} + $self->{h}) {
             warn "on_mousedown";
-            if(SDL_BUTTON_LEFT == $event->button_button && !$focus) {
+            if(SDL_BUTTON_LEFT == $event->button_button && !$self->{focus}) {
                 warn "on_focus";
-                $focus = 1;
+                $self->{focus} = 1;
             }
         }
     }
@@ -73,44 +77,46 @@ sub event_handler {
             warn "on_mouseup";
         }
         else {
-            if(SDL_BUTTON_LEFT == $event->button_button && $focus) {
+            if(SDL_BUTTON_LEFT == $event->button_button && $self->{focus}) {
                 warn "on_blur";
-                $focus = 0;
+                $self->{focus} = 0;
             }
         }
     }
     elsif(SDL_KEYDOWN == $event->type) {
-        if($focus) {
+        if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
             warn "on_keydown: $key";
             if($key eq 'left') {
-                $cursor-- if $cursor > 0;
+                $self->{cursor}-- if $self->{cursor} > 0;
                 warn "moving left";
             }
             elsif($key eq 'right') {
-                $cursor++ if $cursor < length($self->{value});
+                $self->{cursor}++ if $self->{cursor} < length($self->{value});
                 warn "moving right";
             }
             elsif($key eq 'delete') {
-                if($cursor < length($self->{value})) {
-                    $self->{value} = substr($self->{value}, 0, $cursor)
-                                   . substr($self->{value}, $cursor + 1);
+                if($self->{cursor} < length($self->{value})) {
+                    $self->{value} = substr($self->{value}, 0, $self->{cursor})
+                                   . substr($self->{value}, $self->{cursor} + 1);
                 }
             }
             elsif($key eq 'backspace') {
-                if($cursor > 0) {
+                if($self->{cursor} > 0) {
                     $self->{value} = substr($self->{value}, 0, length($self->{value}) - 1);
-                    $cursor--;
+                    $self->{cursor}--;
                 }
             }
-            elsif($event->key_unicode) {
-                $self->{value} .= chr($event->key_unicode);
-                $cursor++;
+            elsif($event->key_unicode && length($key) == 1) {
+                $self->{value} = substr($self->{value}, 0, $self->{cursor})
+                               . chr($event->key_unicode)
+                               . substr($self->{value}, $self->{cursor});
+                $self->{cursor}++;
             }
         }
     }
     elsif(SDL_KEYUP == $event->type) {
-        if($focus) {
+        if($self->{focus}) {
             warn "on_keyup";
         }
     }
