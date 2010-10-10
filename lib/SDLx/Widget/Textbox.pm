@@ -22,11 +22,11 @@ sub new {
     return $self;
 }
 
-my $textbox = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 0, v_y=> 0 );
+my $textbox = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 1, v_y=> 0 );
 $textbox->set_acceleration ( 
     sub {
         my ($time, $current_state) = @_; 
-        return ( 0.1, 0, 0 );
+        return ( 0, 0, 0 );
     }
 );
 my $focus  = 0;
@@ -36,6 +36,10 @@ my $textbox_render = sub {
     my ($state, $self) = @_;
     $self->{app}->draw_rect( [$self->{x}, $self->{y}, $self->{w}, $self->{h}], [255,255,255,255] );
     $self->{app}->draw_gfx_text( [$self->{x} + 3, $self->{y} + 7], 0x000000FF, $self->{value} );
+    if(($state->x / 3) & 1) {
+        my $x = $self->{x} + 2 + $cursor * 8;
+        $self->{app}->draw_line( [$x, $self->{y} + 2], [$x, $self->{y} + $self->{h} - 4], 0x000000FF, 0 );
+    }
     $self->{app}->update;
 };
 
@@ -77,13 +81,15 @@ sub event_handler {
     }
     elsif(SDL_KEYDOWN == $event->type) {
         if($focus) {
-            warn "on_keydown";
             my $key = SDL::Events::get_key_name($event->key_sym);
+            warn "on_keydown: $key";
             if($key eq 'left') {
                 $cursor-- if $cursor > 0;
+                warn "moving left";
             }
             elsif($key eq 'right') {
                 $cursor++ if $cursor < length($self->{value});
+                warn "moving right";
             }
             elsif($key eq 'delete') {
                 if($cursor < length($self->{value})) {
