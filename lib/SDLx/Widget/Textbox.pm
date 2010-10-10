@@ -9,6 +9,7 @@ use Data::Dumper;
 use SDL::Event;
 use SDL::Events;
 use SDL::TTF;
+use Encode;
 
 sub new {
     my $class         = shift;
@@ -16,6 +17,8 @@ sub new {
     my $self          = \%params;
        $self->{value} = '';
        $self          = bless $self, $class;
+       $self->{app}->add_event_handler( sub{$self->event_handler(@_)} );
+       SDL::Events::enable_unicode(1);
     return $self;
 }
 
@@ -73,11 +76,9 @@ sub event_handler {
     }
     elsif(SDL_KEYDOWN == $event->type) {
         if($focus) {
-            warn "on_keydown" . $event->key_sym;
-            my $key = SDL::Events::get_key_name( $event->key_sym );
-            if($key =~ /^.$/) {
-                $key = uc($key) if $event->key_mod & KMOD_SHIFT;
-                $self->{value} .= $key;
+            warn "on_keydown";
+            if($event->key_unicode) {
+                $self->{value} .= chr($event->key_unicode);
             }
         }
     }

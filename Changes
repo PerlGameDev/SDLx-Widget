@@ -3,6 +3,7 @@ Revision history for Perl module SDLx::Widget
 0.04 TBD
     - updated examples [garu]
     - complete overhaul on SDLx::Widget::Sprite [garu]
+    - added SDLx::Widget::Textbox [FROGGS]
 
 0.03 
     - Build.PL deps fixed
