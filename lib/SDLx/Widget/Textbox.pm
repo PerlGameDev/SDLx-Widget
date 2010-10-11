@@ -25,36 +25,42 @@ sub new {
         my ($state, $_self) = @_;
         $_self->{app}->draw_rect( [$_self->{x}, $_self->{y}, $_self->{w}, $_self->{h}], [255,255,255,255] );
         
-        my ($mask, $mouse_x) = @{ SDL::Events::get_mouse_state( ) };
-
+        # calculation the text-highlight-box on mouse movement
         if($self->{mousedown} && $_self->{value}) {
-            my $text_end       = $_self->{x} + 2 + length($_self->{value}) * 8;
-            $mouse_x           = $_self->{x} + $_self->{w} if $mouse_x > $_self->{x} + $_self->{w};
-            $mouse_x           = $_self->{x}               if $mouse_x < $_self->{x};
-            $mouse_x           = $text_end                 if $mouse_x > $text_end;
-            $self->{mousedown} = $text_end                 if $self->{mousedown} > $text_end;
-            
-            my $cursor_left    = int(($self->{mousedown} - 2 - $_self->{x}) / 8 + 0.5);
-            my $left           = $cursor_left  * 8 + 2 + $_self->{x};
-            my $cursor_right   = int(($mouse_x - 2 - $_self->{x}) / 8 + 0.5);
-            my $right          = $cursor_right * 8 + 2 + $_self->{x};
-            my $width          = ($cursor_right - $cursor_left) * 8;
-            
-            $width            -= 8 if $right > $_self->{x} + $_self->{w};
-            
-            $_self->{app}->draw_rect( [$width > 0 ? $left : $right, $_self->{y} + 2, abs($width), $_self->{h} - 4], [128,128,255,255] );
+            my ($mask, $mouse_x)      = @{ SDL::Events::get_mouse_state( ) };
+            my $text_end              = $_self->{x} + 2 + length($_self->{value}) * 8;
+            $mouse_x                  = $_self->{x} + $_self->{w} if $mouse_x > $_self->{x} + $_self->{w};
+            $mouse_x                  = $_self->{x}               if $mouse_x < $_self->{x};
+            $mouse_x                  = $text_end                 if $mouse_x > $text_end;
+            $_self->{mousedown}       = $text_end                 if $_self->{mousedown} > $text_end;
+            $_self->{selection_start} = int(($_self->{mousedown} - 2 - $_self->{x}) / 8 + 0.5);
+            $_self->{selection_stop}  = int(($mouse_x            - 2 - $_self->{x}) / 8 + 0.5);
         }
         
+        # drawing the text-highlight-box
+        if(defined $_self->{selection_start} && defined $_self->{selection_stop} && $_self->{selection_start} != $_self->{selection_stop}) {
+            ($_self->{selection_start}, $_self->{selection_stop}) = sort {$a <=> $b} ($_self->{selection_start}, $_self->{selection_stop});
+            my $width = ($_self->{selection_stop} - $_self->{selection_start}) * 8;
+            my $left  = $_self->{selection_start} * 8 + 2 + $_self->{x};
+            $_self->{app}->draw_rect( [$left, $_self->{y} + 2, $width, $_self->{h} - 4], [128,128,255,255] );
+        }
+        
+        # drawing the name of the textbox in grey letters
         if($_self->{name} && !length($_self->{value}) && !$_self->{focus}) {
             $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0xAAAAAAFF, $_self->{name} );
         }
+        # drawing asterisk for password fields
         elsif($_self->{password}) {
             $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0x000000FF, '*' x length($_self->{value}) );
         }
+        # drawing the value
         else {
             $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0x000000FF, $_self->{value} );
         }
-        if($_self->{focus} && ($state->x / 3) & 1) {
+        
+        # drawing the blinking cursor
+        if($_self->{focus} && ($state->x / 3) & 1
+        && (!defined $_self->{selection_start} || !defined $_self->{selection_stop} || $_self->{selection_start} == $_self->{selection_stop})) {
             my $x = $_self->{x} + 2 + $_self->{cursor} * 8;
             $_self->{app}->draw_line( [$x, $_self->{y} + 2], [$x, $_self->{y} + $_self->{h} - 4], 0x000000FF, 0 );
         }
@@ -119,29 +125,66 @@ sub event_handler {
             
             if($key eq 'left') {
                 $self->{cursor}-- if $self->{cursor} > 0;
-                warn "moving left";
+                $self->{selection_start} = undef;
+                $self->{selection_stop}  = undef;
             }
             elsif($key eq 'right') {
                 $self->{cursor}++ if $self->{cursor} < length($self->{value});
-                warn "moving right";
+                $self->{selection_start} = undef;
+                $self->{selection_stop}  = undef;
+            }
+            elsif($key eq 'home') {
+                $self->{cursor}          = 0;
+                $self->{selection_start} = undef;
+                $self->{selection_stop}  = undef;
+            }
+            elsif($key eq 'end') {
+                $self->{cursor}          = length($self->{value});
+                $self->{selection_start} = undef;
+                $self->{selection_stop}  = undef;
             }
             elsif($key eq 'delete') {
-                if($self->{cursor} < length($self->{value})) {
+                if(defined $self->{selection_start} && defined $self->{selection_stop} && $self->{selection_start} != $self->{selection_stop}) {
+                    $self->{value} = substr($self->{value}, 0, $self->{selection_start})
+                                   . substr($self->{value}, $self->{selection_stop});
+                    $self->{cursor} = $self->{selection_start};
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
+                elsif($self->{cursor} < length($self->{value})) {
                     $self->{value} = substr($self->{value}, 0, $self->{cursor})
                                    . substr($self->{value}, $self->{cursor} + 1);
                 }
             }
             elsif($key eq 'backspace') {
-                if($self->{cursor} > 0) {
-                    $self->{value} = substr($self->{value}, 0, length($self->{value}) - 1);
+                if(defined $self->{selection_start} && defined $self->{selection_stop} && $self->{selection_start} != $self->{selection_stop}) {
+                    $self->{value} = substr($self->{value}, 0, $self->{selection_start})
+                                   . substr($self->{value}, $self->{selection_stop});
+                    $self->{cursor} = $self->{selection_start};
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
+                elsif($self->{cursor} > 0) {
+                    $self->{value} = substr($self->{value}, 0, $self->{cursor} - 1)
+                                   . substr($self->{value}, $self->{cursor});
                     $self->{cursor}--;
                 }
             }
             elsif($event->key_unicode && length($key) == 1) {
-                $self->{value} = substr($self->{value}, 0, $self->{cursor})
-                               . chr($event->key_unicode)
-                               . substr($self->{value}, $self->{cursor});
-                $self->{cursor}++;
+                if(defined $self->{selection_start} && defined $self->{selection_stop} && $self->{selection_start} != $self->{selection_stop}) {
+                    $self->{value} = substr($self->{value}, 0, $self->{selection_start})
+                                   . chr($event->key_unicode)
+                                   . substr($self->{value}, $self->{selection_stop});
+                    $self->{cursor} = $self->{selection_start} + 1;
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
+                else {
+                    $self->{value} = substr($self->{value}, 0, $self->{cursor})
+                                   . chr($event->key_unicode)
+                                   . substr($self->{value}, $self->{cursor});
+                    $self->{cursor}++;
+                }
             }
         }
     }
