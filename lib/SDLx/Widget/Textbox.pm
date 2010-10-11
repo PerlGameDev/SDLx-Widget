@@ -18,11 +18,33 @@ sub new {
     $self->{value}     = '';
     $self->{focus}     = 0;
     $self->{cursor}    = 0;
+    $self->{mousedown} = 0;
     $self->{textbox}   = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 1, v_y=> 0 );
     $self->{textbox}->set_acceleration( sub { return ( 0, 0, 0 ); } );
     $self->{textbox_render} = sub {
         my ($state, $_self) = @_;
         $_self->{app}->draw_rect( [$_self->{x}, $_self->{y}, $_self->{w}, $_self->{h}], [255,255,255,255] );
+        
+        my ($mask, $mouse_x) = @{ SDL::Events::get_mouse_state( ) };
+
+        if($self->{mousedown} && $_self->{value}) {
+            my $text_end       = $_self->{x} + 2 + length($_self->{value}) * 8;
+            $mouse_x           = $_self->{x} + $_self->{w} if $mouse_x > $_self->{x} + $_self->{w};
+            $mouse_x           = $_self->{x}               if $mouse_x < $_self->{x};
+            $mouse_x           = $text_end                 if $mouse_x > $text_end;
+            $self->{mousedown} = $text_end                 if $self->{mousedown} > $text_end;
+            
+            my $cursor_left    = int(($self->{mousedown} - 2 - $_self->{x}) / 8 + 0.5);
+            my $left           = $cursor_left  * 8 + 2 + $_self->{x};
+            my $cursor_right   = int(($mouse_x - 2 - $_self->{x}) / 8 + 0.5);
+            my $right          = $cursor_right * 8 + 2 + $_self->{x};
+            my $width          = ($cursor_right - $cursor_left) * 8;
+            
+            $width            -= 8 if $right > $_self->{x} + $_self->{w};
+            
+            $_self->{app}->draw_rect( [$width > 0 ? $left : $right, $_self->{y} + 2, abs($width), $_self->{h} - 4], [128,128,255,255] );
+        }
+        
         if($_self->{name} && !length($_self->{value}) && !$_self->{focus}) {
             $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0xAAAAAAFF, $_self->{name} );
         }
@@ -60,6 +82,9 @@ sub event_handler {
         && $self->{y} <= $event->motion_y && $event->motion_y < $self->{y} + $self->{h}) {
             warn "on_mousemotion";
         }
+        if($self->{focus} && $self->{mousedown}) {
+            warn "on_drag";
+        }
     }
     elsif(SDL_MOUSEBUTTONDOWN == $event->type) {
         if($self->{x} <= $event->button_x && $event->button_x < $self->{x} + $self->{w}
@@ -69,6 +94,7 @@ sub event_handler {
                 warn "on_focus";
                 $self->{focus} = 1;
             }
+            $self->{mousedown} = $event->button_x;
         }
     }
     elsif(SDL_MOUSEBUTTONUP == $event->type) {
@@ -82,11 +108,15 @@ sub event_handler {
                 $self->{focus} = 0;
             }
         }
+        $self->{mousedown} = 0;
     }
     elsif(SDL_KEYDOWN == $event->type) {
         if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
             warn "on_keydown: $key";
+            
+            $key = ' ' if $key eq 'space';
+            
             if($key eq 'left') {
                 $self->{cursor}-- if $self->{cursor} > 0;
                 warn "moving left";
