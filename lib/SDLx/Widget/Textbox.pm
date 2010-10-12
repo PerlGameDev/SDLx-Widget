@@ -2,6 +2,9 @@
 
 package SDLx::Widget::Textbox;
 
+use strict;
+use warnings;
+
 use SDL;
 use SDLx::App;
 use SDLx::Controller::Interface;
@@ -10,6 +13,7 @@ use SDL::Events;
 use SDL::TTF;
 use Encode;
 use Clipboard;
+use Time::HiRes;
 
 sub new {
     my $class          = shift;
@@ -97,13 +101,45 @@ sub event_handler {
         && $self->{y} <= $event->button_y && $event->button_y < $self->{y} + $self->{h}) {
             warn "on_mousedown";
             if(SDL_BUTTON_LEFT == $event->button_button) {
-                unless($self->{focus}) {
+                if(!$self->{focus}) {
                     warn "on_focus";
                     $self->{focus} = 1;
                 }
-                $self->{cursor} = int(($event->button_x - 2 - $self->{x}) / 8 + 0.5);
-                $self->{cursor} = length($self->{value}) if $self->{cursor} > length($self->{value});
-                $self->{mousedown} = $event->button_x;
+                else {
+                    # single click
+                    if(!defined $self->{lastclick} || Time::HiRes::time - $self->{lastclick} >= 0.3) {
+                        warn 'on_click';
+                        $self->{cursor} = int(($event->button_x - 2 - $self->{x}) / 8 + 0.5);
+                        $self->{cursor} = length($self->{value}) if $self->{cursor} > length($self->{value});
+                        $self->{mousedown} = $event->button_x;
+                    }
+                    # double click (selecting word)
+                    elsif(!defined $self->{lastdoubleclick} || Time::HiRes::time - $self->{lastdoubleclick} >= 0.3) {
+                        warn 'on_doubleclick';
+                        if(substr($self->{value}, 0, $self->{cursor}) =~ m/^(.+)\b.{1}/) {
+                            $self->{selection_start} = length($1);
+                        }
+                        else {
+                            $self->{selection_start} = 0;
+                        }
+                        
+                        if(substr($self->{value}, $self->{cursor})    =~ m/.{1}\b(.+)$/) {
+                            $self->{selection_stop} = length($self->{value}) - length($1);
+                        }
+                        else {
+                            $self->{selection_stop} = length($self->{value});
+                        }
+                        $self->{lastdoubleclick} = Time::HiRes::time;
+                    }
+                    # trippel click (select all)
+                    else {
+                        warn 'on_trippelclick';
+                        $self->{lastwasdblclick} = undef;
+                        $self->{selection_start} = 0;
+                        $self->{selection_stop}  = length($self->{value});
+                    }
+                    $self->{lastclick} = Time::HiRes::time;
+                }
             }
         }
     }
@@ -140,7 +176,7 @@ sub event_handler {
                     $self->{cursor} += length(Clipboard->paste);
                 }
                 elsif(defined $self->{selection_start} && defined $self->{selection_stop}) {
-                    ($_self->{selection_start}, $_self->{selection_stop}) = sort {$a <=> $b} ($_self->{selection_start}, $_self->{selection_stop});
+                    ($self->{selection_start}, $self->{selection_stop}) = sort {$a <=> $b} ($self->{selection_start}, $self->{selection_stop});
                     if($key eq 'c') {
                         Clipboard->copy(substr($self->{value}, $self->{selection_start}, $self->{selection_stop} - $self->{selection_start}));
                     }
