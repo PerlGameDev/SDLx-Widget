@@ -10,6 +10,7 @@ use SDL::Event;
 use SDL::Events;
 use SDL::TTF;
 use Encode;
+use Clipboard;
 
 sub new {
     my $class          = shift;
@@ -121,11 +122,35 @@ sub event_handler {
     elsif(SDL_KEYDOWN == $event->type) {
         if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
+            my $mod = SDL::Events::get_mod_state();
+
             warn 'on_keydown' . $key;
             
             $key = ' ' if $key eq 'space';
             
-            if($key =~ /\bshift$/) {
+            if($mod & KMOD_CTRL) {
+                warn 'on_shiftdown';
+                if($key eq 'v') {
+                    $self->{value}   = substr($self->{value}, 0, $self->{cursor})
+                                     . Clipboard->paste
+                                     . substr($self->{value}, $self->{cursor});
+                    $self->{cursor} += length(Clipboard->paste);
+                }
+                elsif(defined $self->{selection_start} && defined $self->{selection_stop}) {
+                    ($_self->{selection_start}, $_self->{selection_stop}) = sort {$a <=> $b} ($_self->{selection_start}, $_self->{selection_stop});
+                    if($key eq 'c') {
+                        Clipboard->copy(substr($self->{value}, $self->{selection_start}, $self->{selection_stop} - $self->{selection_start}));
+                    }
+                    elsif($key eq 'x') {
+                        Clipboard->copy(substr($self->{value}, $self->{selection_start}, $self->{selection_stop} - $self->{selection_start}));
+                        $self->{value} = substr($self->{value}, 0, $self->{selection_start})
+                                       . substr($self->{value}, $self->{selection_stop});
+                        $self->{selection_start} = undef;
+                        $self->{selection_stop}  = undef;
+                    }
+                }
+            }
+            elsif($key =~ /\bshift$/) {
                 warn 'on_shiftdown';
                 $self->{shiftdown} = $self->{cursor};
             }
