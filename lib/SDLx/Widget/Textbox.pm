@@ -5,7 +5,6 @@ package SDLx::Widget::Textbox;
 use SDL;
 use SDLx::App;
 use SDLx::Controller::Interface;
-use Data::Dumper;
 use SDL::Event;
 use SDL::Events;
 use SDL::TTF;
@@ -97,11 +96,15 @@ sub event_handler {
         if($self->{x} <= $event->button_x && $event->button_x < $self->{x} + $self->{w}
         && $self->{y} <= $event->button_y && $event->button_y < $self->{y} + $self->{h}) {
             warn "on_mousedown";
-            if(SDL_BUTTON_LEFT == $event->button_button && !$self->{focus}) {
-                warn "on_focus";
-                $self->{focus} = 1;
+            if(SDL_BUTTON_LEFT == $event->button_button) {
+                unless($self->{focus}) {
+                    warn "on_focus";
+                    $self->{focus} = 1;
+                }
+                $self->{cursor} = int(($event->button_x - 2 - $self->{x}) / 8 + 0.5);
+                $self->{cursor} = length($self->{value}) if $self->{cursor} > length($self->{value});
+                $self->{mousedown} = $event->button_x;
             }
-            $self->{mousedown} = $event->button_x;
         }
     }
     elsif(SDL_MOUSEBUTTONUP == $event->type) {
