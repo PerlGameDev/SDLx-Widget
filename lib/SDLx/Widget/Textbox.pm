@@ -111,7 +111,9 @@ sub event_handler {
         else {
             if(SDL_BUTTON_LEFT == $event->button_button && $self->{focus}) {
                 warn "on_blur";
-                $self->{focus} = 0;
+                $self->{selection_start} = undef;
+                $self->{selection_stop}  = undef;
+                $self->{focus}           = 0;
             }
         }
         $self->{mousedown} = 0;
@@ -119,19 +121,35 @@ sub event_handler {
     elsif(SDL_KEYDOWN == $event->type) {
         if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
-            warn "on_keydown: $key";
+            warn 'on_keydown' . $key;
             
             $key = ' ' if $key eq 'space';
             
-            if($key eq 'left') {
+            if($key =~ /\bshift$/) {
+                warn 'on_shiftdown';
+                $self->{shiftdown} = $self->{cursor};
+            }
+            elsif($key eq 'left') {
                 $self->{cursor}-- if $self->{cursor} > 0;
-                $self->{selection_start} = undef;
-                $self->{selection_stop}  = undef;
+                if(defined $self->{shiftdown}) {
+                    $self->{selection_start} = $self->{cursor};
+                    $self->{selection_stop}  = $self->{shiftdown};
+                }
+                else {
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
             }
             elsif($key eq 'right') {
                 $self->{cursor}++ if $self->{cursor} < length($self->{value});
-                $self->{selection_start} = undef;
-                $self->{selection_stop}  = undef;
+                if(defined $self->{shiftdown}) {
+                    $self->{selection_start} = $self->{shiftdown};
+                    $self->{selection_stop}  = $self->{cursor};
+                }
+                else {
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
             }
             elsif($key eq 'home') {
                 $self->{cursor}          = 0;
@@ -190,9 +208,17 @@ sub event_handler {
     }
     elsif(SDL_KEYUP == $event->type) {
         if($self->{focus}) {
+            my $key = SDL::Events::get_key_name($event->key_sym);
             warn "on_keyup";
+            if($key =~ /\bshift$/) {
+                $self->{shiftdown}  = undef;
+            }
         }
     }
+}
+
+sub DESTROY {
+    my $self = shift;
 }
 
 1;
