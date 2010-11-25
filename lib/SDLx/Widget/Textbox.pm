@@ -252,7 +252,7 @@ sub event_handler {
                     $self->{cursor}--;
                 }
             }
-            elsif($event->key_unicode && length($key) == 1) {
+            elsif($event->key_unicode && (length($key) == 1 || (length($key) == 3 && $key =~ s/\[|\]//) )) {
                 if(defined $self->{selection_start} && defined $self->{selection_stop} && $self->{selection_start} != $self->{selection_stop}) {
                     $self->{value} = substr($self->{value}, 0, $self->{selection_start})
                                    . chr($event->key_unicode)
@@ -268,6 +268,7 @@ sub event_handler {
                     $self->{cursor}++;
                 }
             }
+
         }
     }
     elsif(SDL_KEYUP == $event->type) {
