@@ -90,32 +90,32 @@ sub event_handler {
     if(SDL_MOUSEMOTION == $event->type) {
         if($self->{x} <= $event->motion_x && $event->motion_x < $self->{x} + $self->{w}
         && $self->{y} <= $event->motion_y && $event->motion_y < $self->{y} + $self->{h}) {
-            warn "on_mousemotion";
+            #warn "on_mousemotion";
         }
         if($self->{focus} && $self->{mousedown}) {
-            warn "on_drag";
+            #warn "on_drag";
         }
     }
     elsif(SDL_MOUSEBUTTONDOWN == $event->type) {
         if($self->{x} <= $event->button_x && $event->button_x < $self->{x} + $self->{w}
         && $self->{y} <= $event->button_y && $event->button_y < $self->{y} + $self->{h}) {
-            warn "on_mousedown";
+            #warn "on_mousedown";
             if(SDL_BUTTON_LEFT == $event->button_button) {
                 if(!$self->{focus}) {
-                    warn "on_focus";
+                    #warn "on_focus";
                     $self->{focus} = 1;
                 }
                 else {
                     # single click
                     if(!defined $self->{lastclick} || Time::HiRes::time - $self->{lastclick} >= 0.3) {
-                        warn 'on_click';
+                        #warn 'on_click';
                         $self->{cursor} = int(($event->button_x - 2 - $self->{x}) / 8 + 0.5);
                         $self->{cursor} = length($self->{value}) if $self->{cursor} > length($self->{value});
                         $self->{mousedown} = $event->button_x;
                     }
                     # double click (selecting word)
                     elsif(!defined $self->{lastdoubleclick} || Time::HiRes::time - $self->{lastdoubleclick} >= 0.3) {
-                        warn 'on_doubleclick';
+                        #warn 'on_doubleclick';
                         if(substr($self->{value}, 0, $self->{cursor}) =~ m/^(.+)\b.{1}/) {
                             $self->{selection_start} = length($1);
                         }
@@ -133,7 +133,7 @@ sub event_handler {
                     }
                     # trippel click (select all)
                     else {
-                        warn 'on_trippelclick';
+                        #warn 'on_trippelclick';
                         $self->{lastwasdblclick} = undef;
                         $self->{selection_start} = 0;
                         $self->{selection_stop}  = length($self->{value});
@@ -146,11 +146,11 @@ sub event_handler {
     elsif(SDL_MOUSEBUTTONUP == $event->type) {
         if($self->{x} <= $event->button_x && $event->button_x < $self->{x} + $self->{w}
         && $self->{y} <= $event->button_y && $event->button_y < $self->{y} + $self->{h}) {
-            warn "on_mouseup";
+            #warn "on_mouseup";
         }
         else {
             if(SDL_BUTTON_LEFT == $event->button_button && $self->{focus}) {
-                warn "on_blur";
+                #warn "on_blur";
                 $self->{selection_start} = undef;
                 $self->{selection_stop}  = undef;
                 $self->{focus}           = 0;
@@ -163,12 +163,12 @@ sub event_handler {
             my $key = SDL::Events::get_key_name($event->key_sym);
             my $mod = SDL::Events::get_mod_state();
 
-            warn 'on_keydown' . $key;
+            #warn 'on_keydown' . $key;
             
             $key = ' ' if $key eq 'space';
             
             if($mod & KMOD_CTRL) {
-                warn 'on_shiftdown';
+                #warn 'on_shiftdown';
                 if($key eq 'v') {
                     $self->{value}   = substr($self->{value}, 0, $self->{cursor})
                                      . Clipboard->paste
@@ -190,7 +190,7 @@ sub event_handler {
                 }
             }
             elsif($key =~ /\bshift$/) {
-                warn 'on_shiftdown';
+                #warn 'on_shiftdown';
                 $self->{shiftdown} = $self->{cursor};
             }
             elsif($key eq 'left') {
@@ -273,7 +273,7 @@ sub event_handler {
     elsif(SDL_KEYUP == $event->type) {
         if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
-            warn "on_keyup";
+            #warn "on_keyup";
             if($key =~ /\bshift$/) {
                 $self->{shiftdown}  = undef;
             }
