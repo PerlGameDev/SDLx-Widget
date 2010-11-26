@@ -7,7 +7,6 @@ use warnings;
 
 use SDL;
 use SDLx::App;
-use SDLx::Controller::Interface;
 use SDL::Event;
 use SDL::Events;
 use SDL::TTF;
@@ -23,10 +22,10 @@ sub new {
     $self->{focus}     = 0;
     $self->{cursor}    = 0;
     $self->{mousedown} = 0;
-    $self->{textbox}   = SDLx::Controller::Interface->new( x=> 0, y => 0, v_x => 1, v_y=> 0 );
-    $self->{textbox}->set_acceleration( sub { return ( 0, 0, 0 ); } );
+    $self->{textbox}   = {};
     $self->{textbox_render} = sub {
-        my ($state, $_self) = @_;
+        my $_self = $self;
+		my $delta = $_[0];
         $_self->{app}->draw_rect( [$_self->{x}, $_self->{y}, $_self->{w}, $_self->{h}], [255,255,255,255] );
         
         # calculation the text-highlight-box on mouse movement
@@ -61,9 +60,9 @@ sub new {
         else {
             $_self->{app}->draw_gfx_text( [$_self->{x} + 3, $_self->{y} + 7], 0x000000FF, $_self->{value} );
         }
-        
+       
         # drawing the blinking cursor
-        if($_self->{focus} && ($state->x / 3) & 1
+        if($_self->{focus} && ( int($delta*10) % 2)
         && (!defined $_self->{selection_start} || !defined $_self->{selection_stop} || $_self->{selection_start} == $_self->{selection_stop})) {
             my $x = $_self->{x} + 2 + $_self->{cursor} * 8;
             $_self->{app}->draw_line( [$x, $_self->{y} + 2], [$x, $_self->{y} + $_self->{h} - 4], 0x000000FF, 0 );
@@ -81,7 +80,8 @@ sub new {
 
 sub show {
     my $self = shift;
-    $self->{textbox}->attach( $self->{app}, $self->{textbox_render}, $self );
+
+	$self->{app}->add_show_handler( $self->{textbox_render}, $self );
 }
 
 sub event_handler {
