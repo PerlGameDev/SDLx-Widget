@@ -282,8 +282,47 @@ sub event_handler {
     }
 }
 
+
+sub value :lvalue
+{
+	$_[0]->{value}
+}
+
+sub focus :lvalue
+{
+	$_[0]->{focus}
+}
+
 sub DESTROY {
     my $self = shift;
 }
 
 1;
+__END__
+=head1 NAME
+
+SDLx::Widget::Textbox - create text boxes for your SDL apps easily
+
+=head1 SYNOPSIS
+
+Create a simple SDL text for your L<SDLx::App>:
+
+        $textbox = SDLx::Widget::Textbox->new(app => $app, x => 200, y => 200, w => 200, h => 20, name => 'username');
+        $passbox = SDLx::Widget::Textbox->new(app => $app, x => 200, y => 230, w => 200, h => 20, name => 'password', password => 1);
+        $textbox->show;
+        $passbox->show;
+
+C<$app> is L<SDLx::App> or L<SDLx::Controller>.
+
+Get the value out by:
+
+		my $text_value = $textbox->value;
+	
+Also know if it is focused right now.
+
+		warn 'Stop typing here!' if $textbox->focus;
+
+=head1 SEE ALSO
+
+L<< SDL >>, L<< SDLx::App >>, L<< SDLx::Controller >>
+
