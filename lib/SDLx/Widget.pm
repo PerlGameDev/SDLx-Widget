@@ -1,39 +1,18 @@
-package SDLx::Widget;
-use strict;
-
-BEGIN {
-    use Exporter ();
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '0.04';
-    @ISA         = qw(Exporter);
-    #Give a hoot don't pollute, do not export more than needed by default
-    @EXPORT      = qw();
-    @EXPORT_OK   = qw();
-    %EXPORT_TAGS = ();
-}
-
-
 =head1 NAME
 
 SDLx::Widget - Common Widgets using SDL
 
-=head1 SYNOPSIS
-
-  use SDLx::Widget;
-  use SDLx::Widget::Controller;
-
 =head1 DESCRIPTION
 
+This distribution provides GUI widgets such as Menu and Textbox.
 
 =head1 USAGE
-
-Pick a widget connect it to SDLx::Widget::Controller. More to come
 
 See the examples directory that came with this package
 
 =head1 BUGS
 
-
+You tell me! http://sdlperl.ath.cx/
 
 =head1 SUPPORT
 
@@ -48,6 +27,9 @@ See the examples directory that came with this package
 
     Zach
     CPAN ID:ZPMORGAN
+
+	FROGGS
+	CPAN ID: FROGGS
     
  
     Kartik Thakore

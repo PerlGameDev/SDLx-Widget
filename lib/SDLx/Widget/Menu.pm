@@ -170,7 +170,7 @@ sub render {
     }
 }
 
-42;
+1;
 __END__
 =head1 NAME
 
