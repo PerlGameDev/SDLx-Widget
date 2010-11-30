@@ -11,6 +11,7 @@ Module::Build->new(
     requires => {
         'SDL'        => '2.523',
         'Clipboard'  => '0',
+		'Mouse'		 => '0',
     },
     dist_abstract => 'Common game widgets using SDL',
     dist_author   => 'Dustin Mays, garu, Zpmorgan, kthakore, FROGGS',
