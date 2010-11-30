@@ -15,7 +15,7 @@ Module::Build->new(
     },
     dist_abstract => 'Common game widgets using SDL',
     dist_author   => 'Dustin Mays, garu, Zpmorgan, kthakore, FROGGS',
-	dist_version  => '0.04',
+	dist_version  => '0.05',
     meta_merge => {
         resources => {
             bugtracker => 'http://sdlperl.ath.cx/projects/SDLPerl/',
