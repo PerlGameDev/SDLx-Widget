@@ -13,7 +13,6 @@ Module::Build->new(
         'Clipboard'  => '0',
 		'Mouse'		 => '0',
     },
-    dist_abstract => 'Common game widgets using SDL',
     dist_author   => 'Dustin Mays, garu, Zpmorgan, kthakore, FROGGS',
     meta_merge => {
         resources => {
