@@ -1,6 +1,12 @@
 Revision history for Perl module SDLx::Widget
 
-0.04 TBD
+0.06
+	- Using CPAN compliant SDLx-Widget versioning modules
+
+0.05
+	- Moved SDLx::Widget::Textbox to use Mouse
+
+0.04 
     - updated examples [garu]
     - complete overhaul on SDLx::Widget::Sprite [garu]
     - added SDLx::Widget::Textbox [FROGGS]
