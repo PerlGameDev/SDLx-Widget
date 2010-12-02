@@ -1,3 +1,8 @@
+package SDLx::Widget; 
+use strict; 
+use warnings; 
+our $VERSION = '0.06';
+
 =head1 NAME
 
 SDLx::Widget - Common Widgets using SDL
