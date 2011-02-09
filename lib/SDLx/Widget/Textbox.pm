@@ -16,23 +16,24 @@ use Time::HiRes;
 
 use Mouse;
 
-has 'app'   => ( is => 'ro', isa => 'SDLx::Controller', required => 1 );
-has 'value' => ( is => 'rw', isa => 'Str', default => '' );
-has 'focus' => ( is => 'rw', isa => 'Int', default => 0 );
-has 'cursor' => ( is => 'rw', isa => 'Int', default => 0 );
+has 'app'       => ( is => 'ro', isa => 'SDLx::Controller', required => 1 );
+has 'value'     => ( is => 'rw', isa => 'Str', default => '' );
+has 'focus'     => ( is => 'rw', isa => 'Int', default => 0 );
+has 'cursor'    => ( is => 'rw', isa => 'Int', default => 0 );
+has 'cursor_moved'    => ( is => 'rw', isa => 'Int', default => 0 );
 has 'mousedown' => ( is => 'rw', isa => 'Int', default => 0 );
-has 'x'	=> ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'y'	=> ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'w'	=> ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'h'	=> ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'name'	=> ( is => 'rw', isa => 'Str', required => 1  );
+has 'x'         => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'y'         => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'w'         => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'h'         => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'name'      => ( is => 'rw', isa => 'Str', required => 1  );
+has 'textbox'   => ( is => 'rw', isa => 'HashRef', default => sub{ {} } );
 
-has 'textbox' => ( is => 'rw', isa => 'HashRef', default => sub{ {} } );
 sub BUILD {
-    my $self          = shift;
+    my $self = shift;
     $self->{textbox_render} = sub {
         my $_self = $self;
-		my $delta = $_[0];
+        my $delta = $_[0];
         $_self->app->draw_rect( [$_self->x, $_self->y, $_self->w, $_self->h], [255,255,255,255] );
         
         # calculation the text-highlight-box on mouse movement
@@ -67,12 +68,13 @@ sub BUILD {
         else {
             $_self->app->draw_gfx_text( [$_self->x + 3, $_self->y + 7], 0x000000FF, $_self->{value} );
         }
-       
+
         # drawing the blinking cursor
-        if($_self->{focus} && ( int($delta*10) % 2)
+        if($_self->{focus}
+        && ((int($_self->app->ticks/600) % 2) || $_self->{cursor_moved} + 500 > $_self->app->ticks)
         && (!defined $_self->{selection_start} || !defined $_self->{selection_stop} || $_self->{selection_start} == $_self->{selection_stop})) {
             my $x = $_self->x + 2 + $_self->cursor * 8;
-            $_self->app->draw_line( [$x, $_self->y + 2], [$x, $_self->y + $_self->h - 4], 0x000000FF, 0 );
+            $_self->app->draw_line( [$x, $_self->y + 2], [$x, $_self->y + $_self->h - 4], 0x000000FF );
         }
         $_self->app->update;
     };
@@ -85,28 +87,31 @@ sub BUILD {
 sub show {
     my $self = shift;
 
-	$self->app->add_show_handler( $self->{textbox_render}, $self );
+    $self->app->add_show_handler( $self->{textbox_render}, $self );
 }
 
 sub event_handler {
     my ($self, $event, $app) = @_;
     
     if(SDL_MOUSEMOTION == $event->type) {
+        # on_mousemotion
         if($self->x <= $event->motion_x && $event->motion_x < $self->x + $self->w
         && $self->y <= $event->motion_y && $event->motion_y < $self->y + $self->h) {
-            #warn "on_mousemotion";
+                
         }
+
+        # on_drag
         if($self->{focus} && $self->{mousedown}) {
-            #warn "on_drag";
+        
         }
     }
     elsif(SDL_MOUSEBUTTONDOWN == $event->type) {
         if($self->x <= $event->button_x && $event->button_x < $self->x + $self->w
         && $self->y <= $event->button_y && $event->button_y < $self->y + $self->h) {
-            #warn "on_mousedown";
+            # on_mousedown
             if(SDL_BUTTON_LEFT == $event->button_button) {
                 if(!$self->{focus}) {
-                    #warn "on_focus";
+                    # on_focus
                     $self->{focus} = 1;
                 }
                 else {
@@ -119,7 +124,7 @@ sub event_handler {
                     }
                     # double click (selecting word)
                     elsif(!defined $self->{lastdoubleclick} || Time::HiRes::time - $self->{lastdoubleclick} >= 0.3) {
-                        #warn 'on_doubleclick';
+                        # on_doubleclick
                         if(substr($self->{value}, 0, $self->{cursor}) =~ m/^(.+)\b.{1}/) {
                             $self->{selection_start} = length($1);
                         }
@@ -137,7 +142,7 @@ sub event_handler {
                     }
                     # trippel click (select all)
                     else {
-                        #warn 'on_trippelclick';
+                        # on_trippelclick
                         $self->{lastwasdblclick} = undef;
                         $self->{selection_start} = 0;
                         $self->{selection_stop}  = length($self->{value});
@@ -150,11 +155,11 @@ sub event_handler {
     elsif(SDL_MOUSEBUTTONUP == $event->type) {
         if($self->x <= $event->button_x && $event->button_x < $self->x + $self->w
         && $self->y <= $event->button_y && $event->button_y < $self->y + $self->h) {
-            #warn "on_mouseup";
+            # on_mouseup
         }
         else {
             if(SDL_BUTTON_LEFT == $event->button_button && $self->{focus}) {
-                #warn "on_blur";
+                # on_blur
                 $self->{selection_start} = undef;
                 $self->{selection_stop}  = undef;
                 $self->{focus}           = 0;
@@ -162,17 +167,15 @@ sub event_handler {
         }
         $self->{mousedown} = 0;
     }
-    elsif(SDL_KEYDOWN == $event->type) {
+    elsif(SDL_KEYDOWN == $event->type) { # on_keydown
         if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
             my $mod = SDL::Events::get_mod_state();
-
-            #warn 'on_keydown' . $key;
             
             $key = ' ' if $key eq 'space';
             
             if($mod & KMOD_CTRL) {
-                #warn 'on_shiftdown';
+                # on_ctrldown
                 if($key eq 'v') {
                     $self->{value}   = substr($self->{value}, 0, $self->{cursor})
                                      . Clipboard->paste
@@ -194,11 +197,12 @@ sub event_handler {
                 }
             }
             elsif($key =~ /\bshift$/) {
-                #warn 'on_shiftdown';
+                # on_shiftdown
                 $self->{shiftdown} = $self->{cursor};
             }
             elsif($key eq 'left') {
                 $self->{cursor}-- if $self->{cursor} > 0;
+                $self->{cursor_moved} = $self->app->ticks;
                 if(defined $self->{shiftdown}) {
                     $self->{selection_start} = $self->{cursor};
                     $self->{selection_stop}  = $self->{shiftdown};
@@ -210,6 +214,7 @@ sub event_handler {
             }
             elsif($key eq 'right') {
                 $self->{cursor}++ if $self->{cursor} < length($self->{value});
+                $self->{cursor_moved} = $self->app->ticks;
                 if(defined $self->{shiftdown}) {
                     $self->{selection_start} = $self->{shiftdown};
                     $self->{selection_stop}  = $self->{cursor};
@@ -220,14 +225,24 @@ sub event_handler {
                 }
             }
             elsif($key eq 'home') {
-                $self->{cursor}          = 0;
-                $self->{selection_start} = undef;
-                $self->{selection_stop}  = undef;
+                if(defined $self->{shiftdown}) {
+                    $self->{selection_start} = 0;
+                    $self->{selection_stop}  = $self->{selection_stop} ? $self->{selection_stop} : $self->{cursor};
+                }
+                else {
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
             }
             elsif($key eq 'end') {
-                $self->{cursor}          = length($self->{value});
-                $self->{selection_start} = undef;
-                $self->{selection_stop}  = undef;
+                if(defined $self->{shiftdown}) {
+                    $self->{selection_start} = $self->{selection_start} ? $self->{selection_start} : $self->{cursor};
+                    $self->{selection_stop}  = length($self->{value});
+                }
+                else {
+                    $self->{selection_start} = undef;
+                    $self->{selection_stop}  = undef;
+                }
             }
             elsif($key eq 'delete') {
                 if(defined $self->{selection_start} && defined $self->{selection_stop} && $self->{selection_start} != $self->{selection_stop}) {
@@ -278,7 +293,7 @@ sub event_handler {
     elsif(SDL_KEYUP == $event->type) {
         if($self->{focus}) {
             my $key = SDL::Events::get_key_name($event->key_sym);
-            #warn "on_keyup";
+            # on_keyup
             if($key =~ /\bshift$/) {
                 $self->{shiftdown}  = undef;
             }
@@ -289,12 +304,12 @@ sub event_handler {
 
 sub value :lvalue
 {
-	$_[0]->{value}
+    $_[0]->{value}
 }
 
 sub focus :lvalue
 {
-	$_[0]->{focus}
+    $_[0]->{focus}
 }
 
 sub DESTROY {
@@ -311,20 +326,20 @@ SDLx::Widget::Textbox - create text boxes for your SDL apps easily
 
 Create a simple SDL text for your L<SDLx::App>:
 
-        $textbox = SDLx::Widget::Textbox->new(app => $app, x => 200, y => 200, w => 200, h => 20, name => 'username');
-        $passbox = SDLx::Widget::Textbox->new(app => $app, x => 200, y => 230, w => 200, h => 20, name => 'password', password => 1);
-        $textbox->show;
-        $passbox->show;
+    $textbox = SDLx::Widget::Textbox->new(app => $app, x => 200, y => 200, w => 200, h => 20, name => 'username');
+    $passbox = SDLx::Widget::Textbox->new(app => $app, x => 200, y => 230, w => 200, h => 20, name => 'password', password => 1);
+    $textbox->show;
+    $passbox->show;
 
 C<$app> is L<SDLx::App> or L<SDLx::Controller>.
 
 Get the value out by:
 
-		my $text_value = $textbox->value;
-	
+    my $text_value = $textbox->value;
+
 Also know if it is focused right now.
 
-		warn 'Stop typing here!' if $textbox->focus;
+    warn 'Stop typing here!' if $textbox->focus;
 
 =head1 SEE ALSO
 
