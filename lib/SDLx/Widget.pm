@@ -1,7 +1,7 @@
 package SDLx::Widget; 
 use strict; 
 use warnings; 
-our $VERSION = '0.06';
+our $VERSION = '0.071';
 
 =head1 NAME
 
@@ -21,26 +21,25 @@ You tell me! http://sdlperl.ath.cx/
 
 =head1 SUPPORT
 
- #sdl irc.perl.org
+#sdl irc.perl.org
 
 =head1 AUTHORS
 
-    Dustin Mays
+Dustin Mays
 
-    Garu
-    CPAN ID: GARU
+Garu
+CPAN ID: GARU
 
-    Zach
-    CPAN ID:ZPMORGAN
+Zach
+CPAN ID:ZPMORGAN
 
-	FROGGS
-	CPAN ID: FROGGS
-    
- 
-    Kartik Thakore
-    CPAN ID: KTHAKORE
+FROGGS
+CPAN ID: FROGGS
 
-    http://sdl.perl.org
+Kartik Thakore
+CPAN ID: KTHAKORE
+
+http://sdl.perl.org
 
 =head1 COPYRIGHT
 
@@ -53,7 +52,7 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-perl(1).
+L<SDL>
 
 =cut
 

@@ -16,18 +16,18 @@ use Time::HiRes;
 
 use Mouse;
 
-has 'app'       => ( is => 'ro', isa => 'SDLx::Controller', required => 1 );
-has 'value'     => ( is => 'rw', isa => 'Str', default => '' );
-has 'focus'     => ( is => 'rw', isa => 'Int', default => 0 );
-has 'cursor'    => ( is => 'rw', isa => 'Int', default => 0 );
-has 'cursor_moved'    => ( is => 'rw', isa => 'Int', default => 0 );
-has 'mousedown' => ( is => 'rw', isa => 'Int', default => 0 );
-has 'x'         => ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'y'         => ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'w'         => ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'h'         => ( is => 'rw', isa => 'Int' ,required => 1 );
-has 'name'      => ( is => 'rw', isa => 'Str', required => 1  );
-has 'textbox'   => ( is => 'rw', isa => 'HashRef', default => sub{ {} } );
+has 'app'          => ( is => 'ro', isa => 'SDLx::Controller', required => 1 );
+has 'value'        => ( is => 'rw', isa => 'Str', default => '' );
+has 'focus'        => ( is => 'rw', isa => 'Int', default => 0 );
+has 'cursor'       => ( is => 'rw', isa => 'Int', default => 0 );
+has 'cursor_moved' => ( is => 'rw', isa => 'Int', default => 0 );
+has 'mousedown'    => ( is => 'rw', isa => 'Int', default => 0 );
+has 'x'            => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'y'            => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'w'            => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'h'            => ( is => 'rw', isa => 'Int' ,required => 1 );
+has 'name'         => ( is => 'rw', isa => 'Str', required => 1  );
+has 'textbox'      => ( is => 'rw', isa => 'HashRef', default => sub{ {} } );
 
 sub BUILD {
     my $self = shift;

@@ -1,15 +1,38 @@
-pod2text SDLx::Widget.pm > README
+NAME
+    SDLx::Widget - Common Widgets using SDL
 
-If this is still here it means the programmer was too lazy to create the readme file.
+DESCRIPTION
+    This distribution provides GUI widgets such as Menu and Textbox.
 
-You can create it now by using the command shown above from this directory.
+USAGE
+    See the examples directory that came with this package
 
-At the very least you should be able to use this set of instructions
-to install the module...
+BUGS
+    You tell me! http://sdlperl.ath.cx/
 
-perl Build.PL
-./Build
-./Build test
-./Build install
+SUPPORT
+    #sdl irc.perl.org
 
-If you are on a windows box you should use 'nmake' rather than 'make'.
+AUTHORS
+    Dustin Mays
+
+    Garu CPAN ID: GARU
+
+    Zach CPAN ID:ZPMORGAN
+
+    FROGGS CPAN ID: FROGGS
+
+    Kartik Thakore CPAN ID: KTHAKORE
+
+    http://sdl.perl.org
+
+COPYRIGHT
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+    The full text of the license can be found in the LICENSE file included
+    with this module.
+
+SEE ALSO
+    SDL
+

@@ -1,4 +1,5 @@
 .bak
+.bat
 .tar.gz
 .git
 ^Build$

@@ -3,6 +3,7 @@ use Module::Build;
 
 Module::Build->new(
     module_name    => 'SDLx::Widget',
+    all_from       => 'lib/SDLx/Widget.pm',
     license        => 'perl',
     build_requires => {
         'SDL'        => '2.523',
@@ -11,7 +12,7 @@ Module::Build->new(
     requires => {
         'SDL'        => '2.523',
         'Clipboard'  => '0',
-		'Mouse'		 => '0',
+        'Mouse'      => '0',
     },
     dist_author   => 'Dustin Mays, garu, Zpmorgan, kthakore, FROGGS',
     meta_merge => {
@@ -20,4 +21,5 @@ Module::Build->new(
             repository => 'http://github.com/PerlGameDev/SDLx-Widget'
         }
     },
+    create_readme => 1,
 )->create_build_script;

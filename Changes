@@ -1,10 +1,16 @@
 Revision history for Perl module SDLx::Widget
 
+0.071 Feb 09 2011
+    - cleaned up SDLx::Widget::Textbox's code, fixed blinking cursor [FROGGS]
+
+0.07
+    - Checking for extra SDL deps
+
 0.06
-	- Using CPAN compliant SDLx-Widget versioning modules
+    - Using CPAN compliant SDLx-Widget versioning modules
 
 0.05
-	- Moved SDLx::Widget::Textbox to use Mouse
+    - Moved SDLx::Widget::Textbox to use Mouse
 
 0.04 
     - updated examples [garu]
