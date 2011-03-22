@@ -16,6 +16,8 @@ has 'font_color'   => ( is => 'ro', isa => 'ArrayRef',
                         default => sub { [ 255, 255, 255] }
                       );
 
+has 'topleft' => ( is => 'ro', isa => 'ArrayRef', default => sub { [0,0] } );
+
 has 'select_color' => ( is => 'ro', isa => 'ArrayRef', 
                         default => sub { [ 255, 0, 0 ] }
                       );
@@ -151,7 +153,7 @@ sub render {
 
     # TODO: parametrize line spacing (height)
     # and other constants used here
-    my $height = 200;
+    my ($top, $left) = @{$self->topleft};
 
     foreach my $item ( @{$self->_items} ) {
 #        print STDERR 'it: ' . $item->{name} . ', s: '. $self->_items->[$self->current]->{name} . ', c: ' . $self->current . $/;
@@ -167,8 +169,9 @@ sub render {
                 $surface, 
                 SDL::Rect->new(0,0,$surface->w, $surface->h),
                 $screen,
-                SDL::Rect->new( $screen->w / 2 - 70, $height += 50, $screen->w, $screen->h),
+                SDL::Rect->new( $left, $top, $screen->w, $screen->h),
         );
+        $top += 50;
     }
 }
 
