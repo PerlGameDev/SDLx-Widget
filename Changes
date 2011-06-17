@@ -1,5 +1,9 @@
 Revision history for Perl module SDLx::Widget
 
+0.072 to-be-released
+    - menu has a default font (uses SDLx::Text) [garu]
+    - menu text now aligns to the center of the screen [garu]
+
 0.071 Feb 09 2011
     - cleaned up SDLx::Widget::Textbox's code, fixed blinking cursor [FROGGS]
 
