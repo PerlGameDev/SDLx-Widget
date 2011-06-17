@@ -50,7 +50,7 @@ sub BUILD {
 sub _build_font {
     my $self = shift;
 
-    my $font = SDLx::Text->new( size => $self->font_size );
+    my $font = SDLx::Text->new( size => $self->font_size, h_align => 'center' );
     $font->font( $self->font ) if $self->font;
 
     $self->_font( $font );
