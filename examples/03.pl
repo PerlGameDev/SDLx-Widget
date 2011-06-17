@@ -7,7 +7,7 @@ use SDL::Video ;
 use SDL::Surface;
 
 use lib 'lib';
-use SDLx::Widget::Controller;
+use SDLx::Controller;
 use SDLx::Widget::Menu;
 
 croak 'Cannot init  ' . SDL::get_error()
@@ -18,8 +18,8 @@ my $display = SDL::Video::set_video_mode( 800, 600, 32,
                 SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL 
            ) or croak 'Cannot create display: ' . SDL::get_error();
 
-my $game = SDLx::Widget::Controller->new;
-my $menu = SDLx::Widget::Menu->new(font => 'data/metro.ttf');
+my $game = SDLx::Controller->new( eoq => 1 );
+my $menu = SDLx::Widget::Menu->new();
 $menu->items(
         'New Game'  => sub {},
         'Load Game' => sub {},
