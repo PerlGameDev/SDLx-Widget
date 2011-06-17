@@ -2,7 +2,7 @@ package SDLx::Widget::Menu;
 use SDL;
 use SDL::Audio;
 use SDL::Video;
-use SDL::TTF;
+use SDLx::Text;
 use SDL::Color;
 use SDL::Rect;
 use SDL::Event;
@@ -11,7 +11,7 @@ use Carp ();
 use Mouse;
 
 # TODO: add default values
-has 'font'         => ( is => 'ro', isa => 'Str', required => 1 );
+has 'font'         => ( is => 'ro', isa => 'Str' );
 has 'font_color'   => ( is => 'ro', isa => 'ArrayRef', 
                         default => sub { [ 255, 255, 255] }
                       );
@@ -36,9 +36,7 @@ has 'has_audio' => ( is => 'rw', isa => 'Bool', default => 0,
 
 # internal
 has '_items' => (is => 'rw', isa => 'ArrayRef', default => sub {[]} );
-has '_font'  => (is => 'rw', isa => 'SDL::TTF::Font' );
-has '_font_color'   => (is => 'rw', isa => 'SDL::Color' );
-has '_select_color' => (is => 'rw', isa => 'SDL::Color' );
+has '_font'  => (is => 'rw', isa => 'SDLx::Text' );
 has '_change_sound' => (is => 'rw', isa => 'SDL::Mixer::MixChunk' );
 has '_select_sound' => (is => 'rw', isa => 'SDL::Mixer::MixChunk' );
 
@@ -52,16 +50,10 @@ sub BUILD {
 sub _build_font {
     my $self = shift;
 
-    eval(' SDL::TTF::init' );
+    my $font = SDLx::Text->new( size => $self->font_size );
+    $font->font( $self->font ) if $self->font;
 
-	if($@) { Carp::croak "Cannot initialize ttf, please ensure Alien::SDL is installed with SDL_ttf supported " }
-    $self->_font( SDL::TTF::open_font( $self->font, $self->font_size ) );
-
-    Carp::croak 'Error opening font: ' . SDL::get_error
-        unless $self->_font;
-
-    $self->_font_color( SDL::Color->new( @{$self->font_color} ) );
-    $self->_select_color( SDL::Color->new( @{$self->select_color} ) );
+    $self->_font( $font );
 }
 
 sub _build_sound {
@@ -154,23 +146,16 @@ sub render {
     # TODO: parametrize line spacing (height)
     # and other constants used here
     my ($top, $left) = @{$self->topleft};
+    my $font = $self->_font;
 
     foreach my $item ( @{$self->_items} ) {
 #        print STDERR 'it: ' . $item->{name} . ', s: '. $self->_items->[$self->current]->{name} . ', c: ' . $self->current . $/;
         my $color = $item->{name} eq $self->_items->[$self->current]->{name}
-                  ? $self->_select_color : $self->_font_color
+                  ? $self->select_color : $self->font_color
                   ;
 
-        my $surface = SDL::TTF::render_text_blended(
-                $self->_font, $item->{'name'}, $color
-            ) or Carp::croak 'TTF render error: ' . SDL::get_error;
-
-        SDL::Video::blit_surface(
-                $surface, 
-                SDL::Rect->new(0,0,$surface->w, $surface->h),
-                $screen,
-                SDL::Rect->new( $left, $top, $screen->w, $screen->h),
-        );
+        $font->color( $color );
+        $font->write_xy( $screen, $left, $top, $item->{'name'} );
         $top += 50;
     }
 }
