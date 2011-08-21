@@ -19,7 +19,7 @@ my $display = SDL::Video::set_video_mode( 800, 600, 32,
            ) or croak 'Cannot create display: ' . SDL::get_error();
 
 my $game = SDLx::Controller->new( eoq => 1 );
-my $menu = SDLx::Widget::Menu->new();
+my $menu = SDLx::Widget::Menu->new( topleft => [0, 400 ]);
 $menu->items(
         'New Game'  => sub {},
         'Load Game' => sub {},
