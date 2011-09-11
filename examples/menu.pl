@@ -29,15 +29,8 @@ $menu->items(
 
 $game->add_event_handler(
     sub {
-        return 0 if $_[0]->type == SDL_QUIT;
-        return 1;
-    }
-);                                           #failsafe
-
-$game->add_event_handler(
-    sub {
         $menu->event_hook( $_[0] );
-        return !$menu->{exit};
+        $game->stop if $menu->{exit};
     }
 );
 
@@ -45,7 +38,6 @@ $game->add_show_handler(
     sub {
         $menu->render($display);
         SDL::Video::flip($display);
-        return 1;
     }
 );
 
