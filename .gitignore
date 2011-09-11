@@ -3,6 +3,7 @@ Build.bat
 blib/
 _build/
 *META.yml
+*META.json
 MANIFEST
 MANIFEST.bak
 *.swp
