@@ -7,6 +7,8 @@ use SDL::Color;
 use SDL::Rect;
 use SDL::Event;
 use SDL::Events;
+use SDLx::Rect;
+use SDL::TTF;
 use Carp ();
 use Mouse;
 
@@ -39,6 +41,8 @@ has '_items' => (is => 'rw', isa => 'ArrayRef', default => sub {[]} );
 has '_font'  => (is => 'rw', isa => 'SDLx::Text' );
 has '_change_sound' => (is => 'rw', isa => 'SDL::Mixer::MixChunk' );
 has '_select_sound' => (is => 'rw', isa => 'SDL::Mixer::MixChunk' );
+has '_item_rects' => ( is => 'rw', isa => 'ArrayRef[SDLx::Rect]',
+                       default => sub {[]} );
 
 sub BUILD {
     my $self = shift;
@@ -88,6 +92,30 @@ sub _build_sound {
     }
 }
 
+sub _build_item_rects {
+    my ($self) = @_;
+
+    my ( $top, $left ) = @{$self->topleft};
+
+    my @rects;
+
+    foreach my $item ( @{$self->_items} ) {
+        my ( $width, $height )
+            = @{ SDL::TTF::size_text( $self->_font->font, $item->{name} ) };
+
+        # XXX left? not really
+        my $rect
+            = SDLx::Rect->new( $left - $width / 2, $top, $width, $height );
+
+        push @rects, $rect;
+
+        # XXX this seems like a bad idea, see render()
+        $top += 50;
+    }
+
+    $self->_item_rects( \@rects );
+}
+
 # this is the method used to indicate
 # all menu items and their callbacks
 sub items {
@@ -97,13 +125,18 @@ sub items {
         push @{$self->_items}, { name => $name, trigger => $val };
     }
 
+    $self->_build_item_rects;
+
     return $self;
 }
 
 sub event_hook {
     my ($self, $event) = @_;
-    # TODO: add mouse hooks
-    if ( $event->type == SDL_KEYDOWN ) {
+
+    my $type = $event->type;
+    my $mask = SDL_EVENTMASK($type);
+
+    if ( $type == SDL_KEYDOWN ) {
         my $key = $event->key_sym;
 
         if ($key == SDLK_DOWN) {
@@ -117,6 +150,25 @@ sub event_hook {
         elsif ($key == SDLK_RETURN or $key == SDLK_KP_ENTER ) {
             $self->_play($self->_select_sound);
             return $self->_items->[$self->current]->{trigger}->();
+        }
+    }
+    elsif ( $self->mouse && ( $mask & SDL_MOUSEEVENTMASK ) ) {
+        my ( $x, $y ) = ( $event->button_x, $event->button_y );
+        my @rects     = @{$self->_item_rects};
+
+        if( $type == SDL_MOUSEBUTTONDOWN ) {
+            for ( 0 .. $#rects ) {
+                if ( $rects[$_]->collidepoint( $x, $y ) ) {
+                    $self->current( $_ );
+                    last;
+                }
+            }
+        }
+        elsif ( $type == SDL_MOUSEBUTTONUP ) {
+            if ( $rects[$self->current]->collidepoint( $x, $y ) ) {
+                $self->_play($self->_select_sound);
+                return $self->_items->[$self->current]->{trigger}->();
+            }
         }
     }
 
