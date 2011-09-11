@@ -290,6 +290,11 @@ RGB value for the font color of the select item
 
 File name of the sound to play when the selected item changes
 
+=item * mouse => 1
+
+Indicates that menu items can be clicked using a mouse. By default,
+mouse input is ignored.
+
 =back
 
 =head2 items( 'Item 1' => \&sub1, 'Item 2' => \&sub2, ... )
@@ -299,8 +304,6 @@ Creates menu items, setting up callbacks for each item.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
-
-=item * Mouse doesn't work (yet)
 
 =item * Doesn't let you setup other keys to change current selection (yet)
 

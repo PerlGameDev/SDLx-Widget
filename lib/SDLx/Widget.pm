@@ -39,6 +39,9 @@ CPAN ID: FROGGS
 Kartik Thakore
 CPAN ID: KTHAKORE
 
+Jeffrey T. Palmer
+CPAN ID: JTPALMER
+
 http://sdl.perl.org
 
 =head1 COPYRIGHT
