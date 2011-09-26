@@ -11,12 +11,12 @@ my $app = SDLx::App->new(
     eoq => 1,
 );
 
-my $menu = SDLx::Widget::Menu->new( topleft => [ 0, 400 ] );
+my $menu = SDLx::Widget::Menu->new( topleft => [200, 330] );
 $menu->items(
     'New Game'  => sub { },
     'Load Game' => sub { },
     'Options'   => sub { },
-    'Quit' => sub { $menu->{exit} = 1; },
+    'Quit'      => sub { $menu->{exit} = 1; },
 );
 
 $app->add_event_handler(
