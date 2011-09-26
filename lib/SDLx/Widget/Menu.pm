@@ -20,6 +20,10 @@ has 'font_color'   => ( is => 'ro', isa => 'ArrayRef',
 
 has 'topleft' => ( is => 'ro', isa => 'ArrayRef', default => sub { [0,0] } );
 
+has 'h_align' => ( is => 'ro', isa => 'Str', default => sub { 'center' } );
+
+has 'spacing' => ( is => 'ro', isa => 'Int', default => sub { 20 } );
+
 has 'select_color' => ( is => 'ro', isa => 'ArrayRef', 
                         default => sub { [ 255, 0, 0 ] }
                       );
@@ -53,7 +57,7 @@ sub BUILD {
 sub _build_font {
     my $self = shift;
 
-    my $font = SDLx::Text->new( size => $self->font_size, h_align => 'center' );
+    my $font = SDLx::Text->new( size => $self->font_size );
     $font->font( $self->font ) if $self->font;
 
     $self->_font( $font );
@@ -92,25 +96,39 @@ sub _build_sound {
 }
 
 # this is the method used to indicate
-# all menu items and their callbacks
+# all menu items, their position on screen and callbacks
 sub items {
     my ($self, @items) = @_;
 
     my ( $top, $left ) = @{$self->topleft};
+    my $largest = 0;
 
     while( my ($name, $val) = splice @items, 0, 2 ) {
         my ( $width, $height )
             = @{ SDL::TTF::size_text( $self->_font->font, $name ) };
 
-        # XXX left? not really
+        $largest = $width if $width > $largest;
+
         my $rect
-            = SDLx::Rect->new( $left - $width / 2, $top, $width, $height );
+            = SDLx::Rect->new( $left, $top, $width, $height );
 
         push @{$self->_items},
             { name => $name, trigger => $val, rect => $rect };
 
-        # XXX this seems like a bad idea, see render()
-        $top += 50;
+        $top += $self->spacing + $height;
+    }
+
+    # second pass, aligning against the largest item
+    if ($self->h_align ne 'left') {
+        # default is to center
+        my ($method, $value) = ( 'centerx', $left + ($largest / 2) );
+        if ($self->h_align eq 'right') {
+            ($method, $value) = ('right', $left + $largest );
+        }
+
+        foreach my $item ( @{ $self->_items } ) {
+            $item->{rect}->$method( $value );
+        }
     }
 
     return $self;
@@ -181,20 +199,17 @@ sub update {}
 sub render {
     my ($self, $screen) = @_;
 
-    # TODO: parametrize line spacing (height)
-    # and other constants used here
-    my ($top, $left) = @{$self->topleft};
     my $font = $self->_font;
 
     foreach my $item ( @{$self->_items} ) {
 #        print STDERR 'it: ' . $item->{name} . ', s: '. $self->_items->[$self->current]->{name} . ', c: ' . $self->current . $/;
+
         my $color = $item->{name} eq $self->_items->[$self->current]->{name}
                   ? $self->select_color : $self->font_color
                   ;
 
         $font->color( $color );
-        $font->write_xy( $screen, $left, $top, $item->{'name'} );
-        $top += 50;
+        $font->write_xy( $screen, $item->{rect}->x, $item->{rect}->y, $item->{'name'} );
     }
 }
 
@@ -219,7 +234,9 @@ Or customize it at will:
 
     my $menu = SDLx::Widget::Menu->new(
                    topleft      => [100, 120],
-                   font         => 'game/data/menu_font.ttf',
+                   h_align      => 'right',
+                   spacing      => 10,
+                   font         => 'mygame/data/menu_font.ttf',
                    font_size    => 20,
                    font_color   => [255, 0, 0], # RGB (in this case, 'red')
                    select_color => [0, 255, 0],
@@ -269,7 +286,18 @@ Available options are:
 
 =item * topleft => [ $top, $left ]
 
-Determines topmost and leftmost positions for the menu.
+Determines topmost and leftmost positions for the menu. Defaults to [ 0, 0 ].
+
+=item * h_align => 'center'
+
+Sets the preferred menu text alignment. Default is 'center', which
+will center menu items to their largest entry. Other possible values
+are 'left' and 'right'.
+
+=item * spacing => 20
+
+Sets the line spacing between menu items. Default value is 20. Setting
+this to 0 will place one item right below the other.
 
 =item * font => $filename
 
