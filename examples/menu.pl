@@ -11,7 +11,7 @@ my $app = SDLx::App->new(
     eoq => 1,
 );
 
-my $menu = SDLx::Widget::Menu->new( topleft => [ 0, 400 ], mouse => 1 );
+my $menu = SDLx::Widget::Menu->new( topleft => [ 0, 400 ] );
 $menu->items(
     'New Game'  => sub { },
     'Load Game' => sub { },
