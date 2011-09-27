@@ -322,7 +322,7 @@ File name of the sound to play when the selected item changes
 =item * mouse => 1
 
 Indicates that menu items can be clicked using a mouse. By default,
-mouse input is ignored.
+mouse input is active.
 
 =back
 
