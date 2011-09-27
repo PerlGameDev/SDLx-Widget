@@ -33,7 +33,7 @@ has 'active_color' => ( is => 'ro', isa => 'ArrayRef',
 
 has 'font_size'    => ( is => 'ro', isa => 'Int', default => 24 );
 has 'current'      => ( is => 'rw', isa => 'Int', default => 0 );
-has 'selected'     => ( is => 'rw', isa => 'Int' );
+has 'selected'     => ( is => 'rw', isa => 'Maybe[Int]' );
 
 has 'mouse'        => ( is => 'ro', isa => 'Bool', default => 1);
 

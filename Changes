@@ -2,6 +2,7 @@ Revision history for Perl module SDLx::Widget
 
 0.072 to-be-released
     - updated menu example [jtpalmer, garu]
+    - added submenu example [garu]
     - added mouse functionality to SDLx::Widget::Menu [jtpalmer, garu]
     - menu has a default font (uses SDLx::Text) [garu]
     - menu text now aligns to 'left', 'center' or 'right' [garu]
