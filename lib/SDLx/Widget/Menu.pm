@@ -4,7 +4,6 @@ use SDL::Audio;
 use SDL::Video;
 use SDLx::Text;
 use SDL::Color;
-use SDL::Rect;
 use SDL::Event;
 use SDL::Events;
 use SDLx::Rect;
@@ -43,6 +42,7 @@ has 'has_audio' => ( is => 'rw', isa => 'Bool', default => 0,
 
 # internal
 has '_items' => (is => 'rw', isa => 'ArrayRef', default => sub {[]} );
+has '_container_rect' => ( is => 'rw', isa => 'SDLx::Rect' );
 has '_font'  => (is => 'rw', isa => 'SDLx::Text' );
 has '_change_sound' => (is => 'rw', isa => 'SDL::Mixer::MixChunk' );
 has '_select_sound' => (is => 'rw', isa => 'SDL::Mixer::MixChunk' );
@@ -102,6 +102,7 @@ sub items {
 
     my ( $top, $left ) = @{$self->topleft};
     my $largest = 0;
+    my $item_top = $top;
 
     while( my ($name, $val) = splice @items, 0, 2 ) {
         my ( $width, $height )
@@ -110,12 +111,12 @@ sub items {
         $largest = $width if $width > $largest;
 
         my $rect
-            = SDLx::Rect->new( $left, $top, $width, $height );
+            = SDLx::Rect->new( $left, $item_top, $width, $height );
 
         push @{$self->_items},
             { name => $name, trigger => $val, rect => $rect };
 
-        $top += $self->spacing + $height;
+        $item_top += $self->spacing + $height;
     }
 
     # second pass, aligning against the largest item
@@ -130,6 +131,15 @@ sub items {
             $item->{rect}->$method( $value );
         }
     }
+
+    # we store a container rect surrounding all items
+    # to help speed things up during mouse motion checks
+    $self->_container_rect( SDLx::Rect->new(
+               $left,
+               $top,
+               $largest,
+               $item_top - $top - $self->spacing
+    ));
 
     return $self;
 }
@@ -160,11 +170,14 @@ sub event_hook {
         my ( $x, $y ) = ( $event->button_x, $event->button_y );
         my @items     = @{$self->_items};
 
-        if( $type == SDL_MOUSEBUTTONDOWN ) {
-            for ( 0 .. $#items ) {
-                if ( $items[$_]->{rect}->collidepoint( $x, $y ) ) {
-                    $self->current( $_ );
-                    last;
+        if ( $type == SDL_MOUSEMOTION ) {
+            ($x, $y) = ( $event->motion_x, $event->motion_y );
+            if ($self->_container_rect->collidepoint( $x, $y )) {
+                for ( 0 .. $#items ) {
+                    if ( $items[$_]->{rect}->collidepoint( $x, $y ) ) {
+                        $self->current( $_ );
+                        last;
+                    }
                 }
             }
         }
