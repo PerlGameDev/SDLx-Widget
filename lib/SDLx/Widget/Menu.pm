@@ -27,8 +27,13 @@ has 'select_color' => ( is => 'ro', isa => 'ArrayRef',
                         default => sub { [ 255, 0, 0 ] }
                       );
 
+has 'active_color' => ( is => 'ro', isa => 'ArrayRef',
+                        default => sub { [ 255, 255, 0 ] }
+                      );
+
 has 'font_size'    => ( is => 'ro', isa => 'Int', default => 24 );
 has 'current'      => ( is => 'rw', isa => 'Int', default => 0 );
+has 'selected'     => ( is => 'rw', isa => 'Int' );
 
 has 'mouse'        => ( is => 'ro', isa => 'Bool', default => 1);
 
@@ -163,6 +168,7 @@ sub event_hook {
         }
         elsif ($key == SDLK_RETURN or $key == SDLK_KP_ENTER ) {
             $self->_play($self->_select_sound);
+            $self->selected( $self->current );
             return $self->_items->[$self->current]->{trigger}->();
         }
     }
@@ -184,6 +190,7 @@ sub event_hook {
         elsif ( $type == SDL_MOUSEBUTTONUP ) {
             if ( $items[$self->current]->{rect}->collidepoint( $x, $y ) ) {
                 $self->_play($self->_select_sound);
+                $self->selected( $self->current );
                 return $items[$self->current]->{trigger}->();
             }
         }
@@ -217,8 +224,10 @@ sub render {
     foreach my $item ( @{$self->_items} ) {
 #        print STDERR 'it: ' . $item->{name} . ', s: '. $self->_items->[$self->current]->{name} . ', c: ' . $self->current . $/;
 
-        my $color = $item->{name} eq $self->_items->[$self->current]->{name}
-                  ? $self->select_color : $self->font_color
+        my $color = defined $self->selected && $item->{name} eq $self->_items->[$self->selected]->{name}
+                  ? $self->select_color
+                  : $item->{name} eq $self->_items->[$self->current]->{name}
+                  ? $self->active_color : $self->font_color
                   ;
 
         $font->color( $color );
@@ -249,10 +258,12 @@ Or customize it at will:
                    topleft      => [100, 120],
                    h_align      => 'right',
                    spacing      => 10,
+                   mouse        => 1,
                    font         => 'mygame/data/menu_font.ttf',
                    font_size    => 20,
                    font_color   => [255, 0, 0], # RGB (in this case, 'red')
                    select_color => [0, 255, 0],
+                   active_color => [0, 0, 255],
                    change_sound => 'game/data/menu_select.ogg',
                )->items(
                    'New Game' => \&play,
@@ -326,7 +337,11 @@ RGB value to set the font color.
 
 =item * select_color => [ $red, $green, $blue ]
 
-RGB value for the font color of the select item
+RGB value for the font color of the selected (clicked) item
+
+=item * active_color => [ $red, $green, $blue ]
+
+RGB value for the font color of the active (hovered) item
 
 =item * change_sound => $filename
 
