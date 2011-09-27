@@ -1,10 +1,11 @@
 Revision history for Perl module SDLx::Widget
 
 0.072 to-be-released
-    - updated menu example [jtpalmer]
-    - added basic mouse functionality to SDLx::Widget::Menu [jtpalmer]
+    - updated menu example [jtpalmer, garu]
+    - added mouse functionality to SDLx::Widget::Menu [jtpalmer, garu]
     - menu has a default font (uses SDLx::Text) [garu]
-    - menu text now aligns to the center of the screen [garu]
+    - menu text now aligns to 'left', 'center' or 'right' [garu]
+    - different colors for hovering and selecting items in the menu [garu]
 
 0.071 Feb 09 2011
     - cleaned up SDLx::Widget::Textbox's code, fixed blinking cursor [FROGGS]
