@@ -1,6 +1,7 @@
-package SDLx::Widget; 
-use strict; 
-use warnings; 
+package SDLx::Widget;
+use strict;
+use warnings;
+
 our $VERSION = '0.071';
 
 =head1 NAME
@@ -31,7 +32,7 @@ Garu
 CPAN ID: GARU
 
 Zach
-CPAN ID:ZPMORGAN
+CPAN ID: ZPMORGAN
 
 FROGGS
 CPAN ID: FROGGS
@@ -52,7 +53,6 @@ it and/or modify it under the same terms as Perl itself.
 The full text of the license can be found in the
 LICENSE file included with this module.
 
-
 =head1 SEE ALSO
 
 L<SDL>
@@ -60,7 +60,6 @@ L<SDL>
 =cut
 
 #################### main pod documentation end ###################
-
 
 1;
 # The preceding line will help the module return a true value
