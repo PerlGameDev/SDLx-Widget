@@ -5,4 +5,4 @@
 ^Build$
 blib/
 _build/
-MYMETA.yml
+^MYMETA\.*$
