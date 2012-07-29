@@ -13,6 +13,8 @@ use SDL::TTF;
 use Carp ();
 use Mouse;
 
+our $VERSION = '0.071';
+
 # TODO: add default values
 has 'font'         => ( is => 'ro', isa => 'Str' );
 has 'font_color'   => ( is => 'ro', isa => 'ArrayRef', 

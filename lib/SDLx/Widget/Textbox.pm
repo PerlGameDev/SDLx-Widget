@@ -16,6 +16,8 @@ use Time::HiRes;
 
 use Mouse;
 
+our $VERSION = '0.071';
+
 has 'app'          => ( is => 'ro', isa => 'SDLx::Controller', required => 1 );
 has 'value'        => ( is => 'rw', isa => 'Str', default => '' );
 has 'focus'        => ( is => 'rw', isa => 'Int', default => 0 );
