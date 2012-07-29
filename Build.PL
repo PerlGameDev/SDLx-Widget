@@ -17,8 +17,8 @@ Module::Build->new(
     dist_author   => 'Dustin Mays, garu, Zpmorgan, kthakore, FROGGS',
     meta_merge => {
         resources => {
-            bugtracker => 'http://sdlperl.ath.cx/projects/SDLPerl/',
-            repository => 'http://github.com/PerlGameDev/SDLx-Widget'
+            bugtracker => 'https://github.com/PerlGameDev/SDLx-Widget/issues',
+            repository => 'https://github.com/PerlGameDev/SDLx-Widget'
         }
     },
     create_readme => 1,

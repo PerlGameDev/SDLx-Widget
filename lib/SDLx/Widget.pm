@@ -18,7 +18,7 @@ See the examples directory that came with this package
 
 =head1 BUGS
 
-You tell me! http://sdlperl.ath.cx/
+You tell me! https://github.com/PerlGameDev/SDLx-Widget/issues
 
 =head1 SUPPORT
 
