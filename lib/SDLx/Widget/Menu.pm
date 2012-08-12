@@ -219,6 +219,11 @@ sub _play {
 # they need updating in each delta t.
 sub update {}
 
+=pod
+
+=for Pod::Coverage update
+
+=cut
 
 sub render {
     my ($self, $screen) = @_;
@@ -360,6 +365,10 @@ mouse input is active.
 
 =head2 items( 'Item 1' => \&sub1, 'Item 2' => \&sub2, ... )
 
+=head2 event_hook( $event )
+
+=head2 render( $surface )
+
 Creates menu items, setting up callbacks for each item.
 
 =head1 BUGS AND LIMITATIONS
@@ -377,7 +386,6 @@ Creates menu items, setting up callbacks for each item.
 Breno G. de Oliveira, C<< <garu at cpan.org> >>
 
 Kartik thakore C<< <kthakore at cpan.org> >>
-
 
 =head1 SEE ALSO
 
