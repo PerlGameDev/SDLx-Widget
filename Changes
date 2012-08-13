@@ -1,6 +1,7 @@
 Revision history for Perl module SDLx::Widget
 
-0.072 to-be-released
+0.072 Aug 12 2012
+    - added release tests for pod syntax and coverage [jtpalmer]
     - updated menu example [jtpalmer, garu]
     - added submenu example [garu]
     - added mouse functionality to SDLx::Widget::Menu [jtpalmer, garu]
@@ -20,12 +21,12 @@ Revision history for Perl module SDLx::Widget
 0.05
     - Moved SDLx::Widget::Textbox to use Mouse
 
-0.04 
+0.04
     - updated examples [garu]
     - complete overhaul on SDLx::Widget::Sprite [garu]
     - added SDLx::Widget::Textbox [FROGGS]
 
-0.03 
+0.03
     - Build.PL deps fixed
     - Added missing Build.PL
 

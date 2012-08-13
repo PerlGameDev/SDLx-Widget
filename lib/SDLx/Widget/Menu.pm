@@ -13,7 +13,7 @@ use SDL::TTF;
 use Carp ();
 use Mouse;
 
-our $VERSION = '0.071';
+our $VERSION = '0.072';
 
 # TODO: add default values
 has 'font'         => ( is => 'ro', isa => 'Str' );
