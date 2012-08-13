@@ -5,6 +5,9 @@ Module::Build->new(
     module_name    => 'SDLx::Widget',
     all_from       => 'lib/SDLx/Widget.pm',
     license        => 'perl',
+    configure_requires => {
+        'Module::Build' => 0,
+    },
     build_requires => {
         'SDL'        => '2.523',
         'Test::More' => 0.88,
