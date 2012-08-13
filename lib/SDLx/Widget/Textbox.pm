@@ -345,9 +345,9 @@ Also know if it is focused right now.
 
 =head1 METHODS
 
-=head2 event_handler( $event )
+=head2 event_handler( $event, $app )
 
-=head2 show( $surface )
+=head2 show( )
 
 =head1 SEE ALSO
 
